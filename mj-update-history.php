@@ -148,7 +148,7 @@ class MJUpdateHistory {
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 		// 作業日取得
-		$date = date( 'Y-n-j' );
+		$date = date( 'Y-n-j  H:i:s' );
 
 		// 更新がプラグインの場合
 		if ( $options['action'] == 'update' && $options['type'] == 'plugin' ){
@@ -226,7 +226,7 @@ class MJUpdateHistory {
 		add_menu_page(
 			'作業履歴',    /* HTMLのページタイトル */
 			'作業履歴',    /* 管理画面メニューの表示名 */
-			'administrator',  /* この機能を		利用できるユーザ */
+			'administrator',  /* この機能を利用できるユーザ */
 			'mj_update_history',        /* urlに入る名前 */
 			array( $this,'admin_page' )   /* 機能を提供するメソッド */
 		);
@@ -251,19 +251,46 @@ class MJUpdateHistory {
 	* VIEW設定
 	*/
 	function admin_page() {
+
+		//テーブル生成用class読み込み
+		require_once dirname(__FILE__) . '/lib/table.php';
+		$mj_update_log_table = new MJUpdateLogTable();
+		$mj_update_log_table->prepare_items();
+
 		global $wpdb;
-		$logs_table_name    = $wpdb->prefix . 'mj_udh_logs';
+		$logs_table_name = $wpdb->prefix . 'mj_udh_logs';
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
-		$results = $wpdb->get_results( "SELECT * FROM $logs_table_name", ARRAY_A );
-		foreach( $results as $val ){
 	?>
-		<p><?php echo esc_html($val['name']); ?></p>
-		<p><?php echo esc_html($val['old_version']); ?></p>
-		<p><?php echo esc_html($val['new_version']); ?></p>
-		<p><?php echo esc_html($val['date']); ?></p>
+	<div class="wrap">
+		<h2>作業履歴</h2>
+		<h3>プラグイン</h3>
+		<table class="widefat striped">
+			<thead>
+				<tr>
+					<th>作業日</th>
+					<th>プラグイン名</th>
+					<th>旧バージョン</th>
+					<th>新バージョン</th>
+				</tr>
+			</thead>
+		<?php
+			$results = $wpdb->get_results( "SELECT * FROM $logs_table_name", ARRAY_A );
+			foreach( $results as $val ){
+		?>
+			<tr>
+				<td><?php echo esc_html($val['date']); ?></td>
+				<td><?php echo esc_html($val['name']); ?></td>
+				<td><?php echo esc_html($val['old_version']); ?></td>
+				<td><?php echo esc_html($val['new_version']); ?></td>
+			</tr>
+		<?php
+			}
+		?>
+		</table>
+	</div>
+	<?php $mj_update_log_table->display() ?>
 	<?php
-		}
 	}
 }
 
