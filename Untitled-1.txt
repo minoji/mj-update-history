@@ -1,0 +1,66 @@
+/main
+  __construct;
+
+  /classes/admin
+    admin_menu_action;
+    admin_enqueue_scripts;
+    admin_page;
+
+  /classes/database
+    //初期作業
+    database_install;
+    //個別登録
+    add_log;
+    add_log_new;
+    add_data;
+    update_data;
+    update_log_data_state;
+    save_log;
+    //初期登録
+    save_all_plugin_current_version;
+    save_all_theme_current_version;
+    save_core_current_version;
+
+  /classes/loggers/core
+
+  /classes/loggers/plugin
+    activated_plugin_current_version;
+    deactivated_plugin_current_version;
+
+  /classes/loggers/theme
+
+
+
+/main
+  __construct;
+
+  /classes/admin
+    admin_menu_action;
+    admin_enqueue_scripts;
+    admin_page;
+
+  /classes/database
+    install_db;
+    save_all_plugin_current_version;
+    save_all_theme_current_version;
+    save_core_current_version;
+    save_db_log;
+    save_db_data;
+    update_db_data;
+
+  /classes/loggers/core
+    updated;
+
+  /classes/loggers/plugin
+    installed;
+    updated;
+    activated;
+    deactivated;
+    uninstalled;
+
+  /classes/loggers/theme
+    installed;
+    updated;
+    activated;
+    deactivated;
+    uninstalled;
