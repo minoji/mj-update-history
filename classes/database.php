@@ -45,9 +45,10 @@ class MJUHDatabase {
 		$logs_sql = "CREATE TABLE $logs_table_name (
 			id bigint(9) NOT NULL AUTO_INCREMENT,
 			name varchar(55) NOT NULL,
+			type int(11) NOT NULL,
+			state varchar(55) NOT NULL,
 			old_version varchar(55) NOT NULL,
 			new_version varchar(55) NOT NULL,
-			type int(11) NOT NULL,
 			date datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 			UNIQUE KEY id (id)
 		) $charset_collate;";
@@ -151,7 +152,7 @@ class MJUHDatabase {
 	/**
 	* 作業logテーブル'mjuh_datas'へプラグイン/テーマ/コアの更新作業logを記録する
 	*/
-	function save_db_log( $name, $old_version, $new_version, $type ) {
+	function save_db_log( $name, $type, $state, $old_version, $new_version ) {
 
 		global $wpdb;
 		$logs_table_name = $wpdb->prefix . 'mjuh_logs';
@@ -164,9 +165,10 @@ class MJUHDatabase {
 			$logs_table_name,
 			array(
 				'name'        => $name,
+				'type'        => $type,
+				'state'       => $state,
 				'old_version' => $old_version,
 				'new_version' => $new_version,
-				'type'        => $type,
 				'date'        => $date
 			),
 			array(

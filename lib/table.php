@@ -120,11 +120,16 @@ class MJUpdateLogTable extends WP_List_Table {
 	 **************************************************************************/
 	function column_default($item, $column_name){
 		switch($column_name){
-			case 'rating':
-			case 'director':
+			case 'date':
+			case 'name':
+			// case 'type':function column_stateで処理(num to name)
+			case 'state':
+			case 'old_version':
+			case 'new_version':
 				return $item[$column_name];
 			default:
-				return print_r($item,true); //Show the whole array for troubleshooting purposes
+				return $item[$column_name];
+				// return print_r($item,true); //Show the whole array for troubleshooting purposes
 		}
 	}
 
@@ -145,11 +150,16 @@ class MJUpdateLogTable extends WP_List_Table {
 	 * @param array $item A singular item (one full row's worth of data)
 	 * @return string Text to be placed inside the column <td> (movie title only)
 	 **************************************************************************/
-	function column_title($item){
-		//Return the title contents
-		return sprintf('%1$s <span style="color:silver">(id:%2$s)</span>',
-			/*$1%s*/ $item['name']
-		);
+	function column_type($item){
+		if( $item['type'] === '0' ) {
+			return 'WordPress';
+		} elseif( $item['type'] === '1' ) {
+			return 'Theme';
+		} elseif( $item['type'] === '2' ) {
+			return 'Plugin';
+		} else {
+			return 'none';
+		}
 	}
 
 
@@ -169,8 +179,9 @@ class MJUpdateLogTable extends WP_List_Table {
 	function get_columns(){
 		$columns = array(
 			'date'        => '作業日',
-			'name'        => '項目',
+			'name'        => '名前',
 			'type'        => 'タイプ',
+			'state'       => '作業内容',
 			'old_version' => '旧バージョン',
 			'new_version' => '新バージョン'
 		);
@@ -197,6 +208,7 @@ class MJUpdateLogTable extends WP_List_Table {
 			'date'        => array('date',true), //true means it's already sorted
 			'name'        => array('name',false),
 			'type'        => array('type',false),
+			'state'        => array('state',false),
 			'old_version' => array('old_version',false),
 			'new_version' => array('new_version',false)
 		);
