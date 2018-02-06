@@ -1,3 +1,15 @@
+■単体
+　インストール installed
+  有効化 activated
+  無効化 deactivated
+  アンインストール none
+  アップデート "ver"
+    有効時 "ver"
+    無効時 "ver"
+■一括
+
+
+
 /main
   __construct;
 
