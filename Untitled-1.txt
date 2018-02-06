@@ -1,5 +1,15 @@
+インストール時→なにもなし
+アクティベート時
+　新規→二段表示（1.0.1, activated）
+  過去有り→activated（バージョンは出ず）
+↓解決策
+state       old  new
+activated        1.0 
+deactivated      1.0
+update      1.0  1.2
+
 ■単体
-　インストール installed
+　インストール none
   有効化 activated
   無効化 deactivated
   アンインストール none
