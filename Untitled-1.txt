@@ -4,7 +4,7 @@
   過去有り→activated（バージョンは出ず）
 ↓解決策
 state       old  new
-activated        1.0 
+activated        1.0
 deactivated      1.0
 update      1.0  1.2
 
@@ -66,9 +66,9 @@ update      1.0  1.2
     save_all_plugin_current_version;
     save_all_theme_current_version;
     save_core_current_version;
-    save_db_log;
-    save_db_data;
-    update_db_data;
+    save_log;
+    save_data;
+    update_data;
 
   /classes/loggers/core
     updated;

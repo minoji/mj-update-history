@@ -24,13 +24,30 @@ register_activation_hook( __FILE__, array( $mjuh_database, 'install_database' ) 
 add_action( 'admin_menu', array( $mjuh_admin, 'admin_menu_action' ) );            /* パネル作成 */
 add_action( 'admin_enqueue_scripts', array( $mjuh_admin, 'admin_enqueue_scripts' ) );  /* CSS出力 */
 
-/* プラグインアップデート前に現在のプラグイン名とバージョンを取得してデータベースに保存する */
+
+/**
+* Plugin
+* アップデート前に現在のプラグイン名とバージョンを取得してデータベースに保存する
+*/
 // add_filter( 'upgrader_pre_install', array( $mjuh_database, 'save_all_plugin_current_version' ), 10, 2 );
-/* プラグイン追加時に該当するプラグイン名とバージョンを取得してデータベースに保存する */
-// add_filter( '********************', array( $mjuh_plugin_logger, 'installed' ), 10, 2 );
-/* プラグイン無効化時に該当するプラグイン名とバージョンを取得してデータベースから削除する */
-// add_filter( '********************', array( $mjuh_plugin_logger, 'deactivated' ), 10, 2 );
-/* プラグインアップデート後に該当するプラグイン名と新しいバージョンと作業日を取得してベータベースに保存する */
+
+/**
+* Plugin
+* 有効化時に該当するプラグイン名とバージョンを取得してデータベースに保存する
+*/
+add_filter( 'activated_plugin', array( $mjuh_plugin_logger, 'activated' ), 10, 2 );
+
+/**
+* Plugin
+* 無効化時に該当するプラグイン名とバージョンを取得してデータベースから削除する
+*/
+add_filter( 'deactivated_plugin', array( $mjuh_plugin_logger, 'deactivated' ), 10, 2 );
+
+/**
+* Core/Theme/Plugin
+* アップデート後に該当する項目の名前と新旧バージョンを取得してベータベースに保存する
+*/
 add_action( 'upgrader_process_complete', array( $mjuh_plugin_logger, 'updated' ), 10, 2 );
+add_action( '_core_updated_successfully', array( $mjuh_plugin_logger, 'updated_core' ), 10, 2 );
 
 
