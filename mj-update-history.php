@@ -3,11 +3,11 @@
 Plugin Name: MJ UPDATE HISTORY
 Description: WordPress coreやプラグイン、テーマのアップデート履歴を出力するプラグインです。
 Author: minoji
-Version: 0.1.0
+Version: 0.1.1
 */
 
 define( 'MJUH_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( 'MJUH_DATABASE_VERSION', '1.0.0' );
+define( 'MJUH_DATABASE_VERSION', '0.1.1' );
 
 
 require_once( MJUH_PLUGIN_DIR . 'classes/admin.php' );
