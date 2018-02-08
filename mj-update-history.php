@@ -7,6 +7,7 @@ Version: 0.1.0
 */
 
 define( 'MJUH_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'MJUH_DATABASE_VERSION', '1.0.0' );
 
 
 require_once( MJUH_PLUGIN_DIR . 'classes/admin.php' );
@@ -17,8 +18,12 @@ $mjuh_database = new MJUHDatabase;
 $mjuh_admin = new MJUHAdmin;
 $mjuh_plugin_logger = new MJUHPluginLogger;
 
-/* アクティベート時にデータベース作成 */
+/* アクティベート時にデータベースのバージョンチェックし存在しなければデータベースインストール */
 register_activation_hook( __FILE__, array( $mjuh_database, 'install_database' ) );
+/* プラグインロード時にデータベースのバージョンチェックし存在しなければデータベースインストール */
+add_action( 'plugins_loaded', array( $mjuh_database, 'check_database_version' ) );
+/* ディアクティベート時にデータベース消去 */
+// register_deactivation_hook( __FILE__, array( $mjuh_database, 'uninstall_database' ) );
 
 /* 管理画面設定 */
 add_action( 'admin_menu', array( $mjuh_admin, 'admin_menu_action' ) );            /* パネル作成 */

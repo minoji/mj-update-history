@@ -1,8 +1,5 @@
 <?php
 
-global $mjuh_db_version;
-$mjuh_db_version = '1.0';
-
 class MJUHDatabase {
 
 	// public static function get_instance() {
@@ -26,7 +23,6 @@ class MJUHDatabase {
 	function install_database() {
 
 		global $wpdb;
-		global $mduh_db_version;
 
 		$datas_table_name   = $wpdb->prefix . 'mjuh_datas';
 		$logs_table_name    = $wpdb->prefix . 'mjuh_logs';
@@ -62,14 +58,25 @@ class MJUHDatabase {
 		$this->save_all_theme_current_version();
 		$this->save_core_current_version();
 
-		add_option( 'mjuh_db_version', $mjuh_db_version );
+		update_option( 'mjuh_db_version', MJUH_DATABASE_VERSION );
 
 	}
 
 
 	/**
-	* データベースのバージョンをチェックして最新版でない場合はアップデート
+	* データベースのバージョンをチェック
 	*/
+	function check_database_version() {
+
+		global $wpdb;
+
+		if( get_option( 'mjuh_db_version' ) != MJUH_DATABASE_VERSION ) {
+
+			$this->install_database();
+
+		}
+
+	}
 
 
 	/**
@@ -195,7 +202,7 @@ class MJUHDatabase {
 			),
 			array(
 				'%s',
-				'%s',
+				'%d',
 				'%s',
 				'%s',
 				'%s'
@@ -229,7 +236,7 @@ class MJUHDatabase {
 			array(
 				'%s',
 				'%s',
-				'%s',
+				'%d',
 				'%s'
 			)
 		);
@@ -260,9 +267,13 @@ class MJUHDatabase {
 				'type' => $type
 			),
 			array(
+				'%s',
 				'%s'
 			),
-			array( '%s' )
+			array(
+				'%s',
+				'%d'
+			)
 		);
 
 	}

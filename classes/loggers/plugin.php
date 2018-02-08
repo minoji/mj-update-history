@@ -2,22 +2,6 @@
 
 class MJUHPluginLogger {
 
-	// public static function get_instance() {
-
-	// 	static $instance = null;
-
-	// 	if ( $instance == null ) {
-	// 		$instance = new self();
-	// 	}
-
-	// 	return $instance;
-	// }
-
-  // installed;
-  // updated;
-  // deactivated;
-  // uninstalled;
-
 	/**
 	* プラグインがアップデートされた時の処理
 	* logとdataをデータベースに保存する

@@ -55,10 +55,11 @@ class MJUHAdmin {
 		$mj_update_log_table = new MJUpdateLogTable();
 		$mj_update_log_table->prepare_items();
 
-	?>
+		echo '<h1>';
+		echo _e('UPDATE HISTORY', 'mj-update-history');
+		echo '</h1>';
+		$mj_update_log_table->display();
 
-	<?php $mj_update_log_table->display() ?>
-	<?php
 	}
 
 
