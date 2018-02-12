@@ -13,14 +13,33 @@ class MJUHAdmin {
 	// 	return $instance;
 	// }
 
-/* =========================================================
-	 管理画面関連
-	 ========================================================= */
+	/* =========================================================
+		 管理画面関連
+		 ========================================================= */
 
 	/**
-	* 基本設定
-	*/
+	 * 基本設定
+	 */
 	function admin_menu_action() {
+
+		if( isset( $_REQUEST['download-log'] ) ) {
+			// ダウンロードの場合
+
+			require_once( MJUH_PLUGIN_DIR . '/lib/table.php' );
+			$mj_update_log_table = new MJUpdateLogTable();
+			$mj_update_log_table->prepare_items();
+
+			$items = $mj_update_log_table->items;
+			$columns = $mj_update_log_table->get_columns();
+
+			$data = $this->set_data( $items, $columns );
+
+			if ( $_REQUEST['download-log'] === 'download' ) {
+				$this->download( $data, $columns );
+			}
+
+		}
+
 		add_menu_page(
 			'作業履歴',    /* HTMLのページタイトル */
 			'作業履歴',    /* 管理画面メニューの表示名 */
@@ -32,8 +51,8 @@ class MJUHAdmin {
 
 
 	/**
-	* CSS
-	*/
+	 * CSS
+	 */
 	function admin_enqueue_scripts() {
 		wp_enqueue_style(
 			'mj-update-history-style',
@@ -41,13 +60,13 @@ class MJUHAdmin {
 			false,
 			false,
 			'all'
-			);
+		);
 	}
 
 
 	/**
-	* VIEW設定
-	*/
+	 * VIEW設定
+	 */
 	function admin_page() {
 
 		//テーブル生成用class読み込み
@@ -58,9 +77,82 @@ class MJUHAdmin {
 		echo '<h1>';
 		echo _e('UPDATE HISTORY', 'mj-update-history');
 		echo '</h1>';
+		echo '<form method="get">';
+		echo '<input type="hidden" name="page" value="' . $_REQUEST['page'] . '">';
+		$mj_update_log_table->search_box('検索', 'search');
 		$mj_update_log_table->display();
+		echo '</form>';
 
 	}
 
+	private function prep_row( $item, $columns ) {
+		$row = [];
+
+		foreach ( array_keys( $columns ) as $column ) {
+			switch ( $column ) {
+				case 'date':
+					$date = date( 'Y-m-d H:i:s', $time_stamp  =strtotime( $item['date'] ) );
+					$row[ $column ] = get_date_from_gmt( $date, 'Y/m/d h:i:s A' );
+					break;
+
+				case 'name':
+					$row[ $column ] = $item['name'];
+					break;
+
+				case 'type':
+					$row[ $column ] = $item['type'];
+					break;
+
+				case 'state':
+					$row[ $column ] = $item['state'];
+					break;
+
+				case 'old_version':
+					$row[ $column ] = $item['old_version'];
+					break;
+
+				case 'new_version':
+					$row[ $column ] = $item['new_version'];
+					break;
+			}
+		}
+
+		return $row;
+	}
+
+
+	/**
+	 * Set data for csv
+	 */
+	function set_data( $items, $columns ) {
+
+		$data = [];
+		foreach ( $items as $item ) {
+			$data[] = $this->prep_row( $item, $columns );
+		}
+
+		return $data;
+
+	}
+
+
+	/**
+	 * ダウンロード
+	 */
+	function download( $data, $columns ) {
+
+		header( 'Content-type: text/csv' );
+		header( 'Content-Disposition: attachment; filename="activity-log-export.csv"' );
+
+		$output = join( ',', array_values( $columns ) ) . "\n";
+		foreach ( $data as $row ) {
+			$output .= join( ',', $row ) . "\n";
+		}
+
+		echo $output; // @codingStandardsIgnoreLine text-only output
+
+		exit;
+
+	}
 
 }

@@ -29,7 +29,7 @@ License: GPL2
 /* == NOTICE ===================================================================
  * Please do not alter this file. Instead: make a copy of the entire plugin,
  * rename it, and work inside the copy. If you modify this plugin directly and
- * an update is released, your changes will be lost!
+ * an items is released, your changes will be lost!
  * ========================================================================== */
 
 
@@ -205,15 +205,141 @@ class MJUpdateLogTable extends WP_List_Table {
 	 **************************************************************************/
 	function get_sortable_columns() {
 		$sortable_columns = array(
-			'date'        => array('date',true), //true means it's already sorted
-			'name'        => array('name',false),
-			'type'        => array('type',false),
-			'state'       => array('state',false),
-			'old_version' => array('old_version',false),
-			'new_version' => array('new_version',false)
+			'date'        => array('date', true), //true means it's already sorted
+			'name'        => array('name', false),
+			'type'        => array('type', false),
+			'state'       => array('state', false),
+			'old_version' => array('old_version', false),
+			'new_version' => array('new_version', false)
 		);
 		return $sortable_columns;
 	}
+
+
+//	function display_tablenav( $which ) {
+//		if ($which == "top") {
+//
+//			echo '<form method="get">';
+//
+//			// ダウンロード
+//			echo '<div class="tablenav ' . esc_attr($which) . '">';
+//			echo '<input type="hidden" name="page" value="' . esc_attr($_REQUEST['page']) . '">';
+//			$this->bulk_actions();
+//			echo '</div>';
+//
+//			// 絞り込み検索
+//			echo '<div class="tablenav ' . esc_attr($which) . '">';
+//			echo '<input type="hidden" name="page" value="' . esc_attr($_REQUEST['page']) . '">';
+//			$this->extra_tablenav($which);
+//			echo '</div>';
+//
+//			echo '</form>';
+//
+//		}
+//
+//	}
+
+
+	function extra_tablenav( $which )
+	{
+		if ($which == "top") {
+			global $wpdb;
+			$logs_table_name = $wpdb->prefix . 'mjuh_logs';
+
+			if (!isset($_REQUEST['type'])) {
+				$_REQUEST['type'] = '';
+			}
+			if (!isset($_REQUEST['state'])) {
+				$_REQUEST['state'] = '';
+			}
+
+
+			echo '<div class="alignleft actions bulkactions">';
+
+			$query = $wpdb->get_results('select * from ' . $logs_table_name . ' order by name asc', ARRAY_A);
+
+			// set type_array for select
+			$types_array = array_column($query, 'type');
+			$types = array_unique($types_array);
+			sort($types);
+
+			if ($types) {
+				echo '<select name="type">';
+				echo '<option value="">All Type</option>';
+
+				foreach ($types as $type) {
+					$type_value = '';
+					switch ( $type ) {
+						case 0:
+							$type_value = 'WordPress';
+							break;
+
+						case 1:
+							$type_value = 'Theme';
+							break;
+
+						case 2:
+							$type_value = 'Plugin';
+							break;
+					}
+					$selected = '';
+					if ($_GET['type'] == $type) {
+						$selected = ' selected = "selected"';
+					}
+					echo '<option value="' . $type . '"' . $selected . '>' . $type_value . '</option>';
+				}
+				echo '</select>';
+			}
+
+			// set state_array for select
+			$state_array = array_column($query, 'state');
+			$states = array_unique($state_array);
+			sort($states);
+
+			if ($states) {
+				echo '<select name="state">';
+				echo '<option value="">All State</option>';
+
+				foreach ($states as $state) {
+					$selected = '';
+					if ($_GET['state'] == $state) {
+						$selected = ' selected = "selected"';
+					}
+					echo '<option value="' . $state . '"' . $selected . '>' . $state . '</option>';
+				}
+				echo '</select>';
+			}
+
+			submit_button('Filter', 'button', null, false);
+			echo '</div>';
+		}
+		if ($which == "bottom") {
+			echo '<button type="submit" name="download-log" class="button button-primary" value="download">';
+			echo 'Download CSV file';
+			echo '</button>';
+		}
+
+	}
+
+
+	function filter_table_data( $data, $search_key ) {
+		$filtered_table_data = array_values( array_filter( $data, function( $row ) use( $search_key ) {
+			foreach( $row as $row_val ) {
+				if( stripos( $row_val, $search_key ) !== false ) {
+					return true;
+				}
+			}
+		} ) );
+		return $filtered_table_data;
+	}
+
+
+//	function get_bulk_actions() {
+//		$actions = array(
+//			'download' => 'Download CSV file'
+//		);
+//		return $actions;
+//	}
 
 
 	/** ************************************************************************
@@ -273,8 +399,27 @@ class MJUpdateLogTable extends WP_List_Table {
 		global $wpdb;
 		$logs_table_name = $wpdb->prefix . 'mjuh_logs';
 		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-		$query = "SELECT * FROM $logs_table_name ORDER BY date DESC;";
+
+		$where = ' WHERE 1 = 1';
+		// if a filter was performed.
+		if ( isset( $_REQUEST['type'] ) && $_REQUEST['type'] !== '' ) {
+			$where .= $wpdb->prepare( ' AND `type` = %s', strtolower( $_REQUEST['type'] ) );
+		}
+		if ( isset( $_REQUEST['state'] ) && $_REQUEST['state'] !== '' ) {
+			$where .= $wpdb->prepare( ' AND `state` = %s', strtolower( $_REQUEST['state'] ) );
+		}
+
+		$query = "SELECT * FROM $logs_table_name $where ORDER BY date DESC;";
 		$data = $wpdb->get_results($query, ARRAY_A );
+
+
+		/**
+		 * if a search was performed.
+		 */
+		$user_search_key = isset( $_REQUEST['s'] ) ? wp_unslash( trim( $_REQUEST['s'] ) ) : '';
+		if( $user_search_key ) {
+			$data = $this->filter_table_data( $data, $user_search_key );
+		}
 
 
 		/**
@@ -286,7 +431,7 @@ class MJUpdateLogTable extends WP_List_Table {
 		 * sorting technique would be unnecessary.
 		 */
 		function usort_reorder($a,$b){
-			$orderby = (!empty($_REQUEST['orderby'])) ? $_REQUEST['orderby'] : 'title'; //If no sort, default to title
+			$orderby = (!empty($_REQUEST['orderby'])) ? $_REQUEST['orderby'] : 'name'; //If no sort, default to title
 			$order = (!empty($_REQUEST['order'])) ? $_REQUEST['order'] : 'asc'; //If no order, default to asc
 			$result = strcmp($a[$orderby], $b[$orderby]); //Determine sort order
 			return ($order==='asc') ? $result : -$result; //Send final sort direction to usort

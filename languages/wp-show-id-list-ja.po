@@ -1,0 +1,79 @@
+# Copyright (C) 2017 WP Show ID List
+# This file is distributed under the same license as the MJ Update History.
+msgid ""
+msgstr ""
+"Project-Id-Version: MJ Update History\n"
+"POT-Creation-Date: 2018-02-20 18:13:42+00:00\n"
+"PO-Revision-Date: 2018-02-20 16:01+0900\n"
+"MIME-Version: 1.0\n"
+"Language-Team: \n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: minoji\n"
+"Language: ja\n"
+"X-Generator: Poedit 2.0.2\n"
+
+#. Found in faq header.
+msgid "Installation Instructions"
+msgstr "インストール手順"
+
+#. Found in changelog list item.
+msgid "2017-05-29 First release"
+msgstr "2017年05月29日 公開"
+
+#. Found in installation list item, faq list item.
+msgid "Activate the plugin through the 'Plugins' menu in WordPress"
+msgstr "WordPressの 「プラグイン」メニューからプラグインを有効にする"
+
+#. Found in installation list item, faq list item.
+msgid "Upload <code>wp-show-id-list</code> to the <code>/wp-content/plugins/</code> directory"
+msgstr "<code>「wp-show-id-list」</code>フォルダを <code>/wp-content/plugins/</code> ディレクトリへアップロードする"
+
+#. Found in description header.
+msgid "Arbitrary section 1"
+msgstr "Arbitrary section 1"
+
+#. Screenshot description.
+msgid "Posts edit page"
+msgstr "投稿一覧画面"
+
+#. Screenshot description.
+msgid "Posts list page"
+msgstr "ID一覧画面 - 投稿一覧"
+
+#. Found in description paragraph.
+msgid "WP Show ID List can check ID of posts and pages"
+msgstr "WP Show ID Listは投稿や固定ページのIDを素早くチェックすることができます"
+
+#. Plugin name.
+msgid "WP Show ID List"
+msgstr "WP Show ID List"
+
+#: wp-show-id-list-setting.php:19 wp-show-id-list-setting.php:20
+#: wp-show-id-list.php:16
+msgid "ID List"
+msgstr "ID一覧"
+
+#: wp-show-id-list.php:25 wp-show-id-list.php:33
+msgid "Posts List"
+msgstr "投稿一覧"
+
+#: wp-show-id-list.php:35
+msgid "Post Title"
+msgstr "投稿タイトル"
+
+#: wp-show-id-list.php:26 wp-show-id-list.php:51
+msgid "Pages List"
+msgstr "固定ページ一覧"
+
+#: wp-show-id-list.php:53
+msgid "Page Title"
+msgstr "固定ページタイトル"
+
+#: wp-show-id-list.php:27 wp-show-id-list.php:70
+msgid "Categories List"
+msgstr "カテゴリー一覧"
+
+#: wp-show-id-list.php:72
+msgid "Category Name"
+msgstr "カテゴリー名"

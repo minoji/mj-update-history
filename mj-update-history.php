@@ -29,7 +29,6 @@ add_action( 'plugins_loaded', array( $mjuh_database, 'check_database_version' ) 
 add_action( 'admin_menu', array( $mjuh_admin, 'admin_menu_action' ) );            /* パネル作成 */
 add_action( 'admin_enqueue_scripts', array( $mjuh_admin, 'admin_enqueue_scripts' ) );  /* CSS出力 */
 
-
 /**
 * Plugin
 * アップデート前に現在のプラグイン名とバージョンを取得してデータベースに保存する

@@ -109,7 +109,7 @@ class MJUHPluginLogger {
 		// プラグインの情報を取得
 		$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin, true, false );
 		$plugin_name = $plugin_data['Name'];
-		$type = 2; //2:プラグイン
+		$type = 2;
 		$state = 'activated';
 		$plugin_new_version = $plugin_data['Version'];
 		$result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $datas_table_name WHERE name = %s AND type = 2", $plugin_name ), ARRAY_A );
