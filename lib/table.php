@@ -78,7 +78,12 @@ if(!class_exists('WP_List_Table')){
 
 class MJUpdateLogTable extends WP_List_Table {
 
-
+	/**
+	 * 絞込後のリスト全件データ
+	 *
+	 * @var array
+	 */
+	public $data;
 
 	/** ************************************************************************
 	 * REQUIRED. Set up a constructor that references the parent constructor. We
@@ -452,6 +457,8 @@ class MJUpdateLogTable extends WP_List_Table {
 		 * ---------------------------------------------------------------------
 		 **********************************************************************/
 
+		// for csv
+		$this->data = $data;
 
 		/**
 		 * REQUIRED for pagination. Let's figure out what page the user is currently
@@ -474,7 +481,7 @@ class MJUpdateLogTable extends WP_List_Table {
 		 * to ensure that the data is trimmed to only the current page. We can use
 		 * array_slice() to
 		 */
-		$data = array_slice($data,(($current_page-1)*$per_page),$per_page);
+		$data_on_the_first_page = array_slice($data,(($current_page-1)*$per_page),$per_page);
 
 
 
@@ -482,7 +489,7 @@ class MJUpdateLogTable extends WP_List_Table {
 		 * REQUIRED. Now we can add our *sorted* data to the items property, where
 		 * it can be used by the rest of the class.
 		 */
-		$this->items = $data;
+		$this->items = $data_on_the_first_page;
 
 
 		/**

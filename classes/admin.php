@@ -29,7 +29,7 @@ class MJUHAdmin {
 			$mj_update_log_table = new MJUpdateLogTable();
 			$mj_update_log_table->prepare_items();
 
-			$items = $mj_update_log_table->items;
+			$items = $mj_update_log_table->data;
 			$columns = $mj_update_log_table->get_columns();
 
 			$data = $this->set_data( $items, $columns );
@@ -91,8 +91,8 @@ class MJUHAdmin {
 		foreach ( array_keys( $columns ) as $column ) {
 			switch ( $column ) {
 				case 'date':
-					$date = date( 'Y-m-d H:i:s', $time_stamp  =strtotime( $item['date'] ) );
-					$row[ $column ] = get_date_from_gmt( $date, 'Y/m/d h:i:s A' );
+					$row[ $column ] = date( 'Y/m/d H:i:s', $time_stamp  =strtotime( $item['date'] ) );
+//					$row[ $column ] = get_date_from_gmt( $date, 'Y/m/d h:i:s A' );
 					break;
 
 				case 'name':
@@ -100,7 +100,9 @@ class MJUHAdmin {
 					break;
 
 				case 'type':
-					$row[ $column ] = $item['type'];
+					if( $item['type'] === '0' ) { $row[ $column ] = 'WordPress'; };
+					if( $item['type'] === '1' ) { $row[ $column ] = 'Theme'; };
+					if( $item['type'] === '2' ) { $row[ $column ] = 'Plugin'; };
 					break;
 
 				case 'state':

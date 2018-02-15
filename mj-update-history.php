@@ -7,7 +7,7 @@ Version: 0.1.1
 */
 
 define( 'MJUH_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( 'MJUH_DATABASE_VERSION', '0.1.1' );
+define( 'MJUH_DATABASE_VERSION', '0.1.2' );
 
 
 require_once( MJUH_PLUGIN_DIR . 'classes/admin.php' );

@@ -23,7 +23,7 @@ class MJUHPluginLogger {
 				// プラグインの情報を取得
 				$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin, true, false );
 				$plugin_name = $plugin_data['Name'];
-				$type = 2; //2:プラグイン
+				$type = 2;
 				$state = 'updated';
 				$result = $wpdb->get_row( $wpdb->prepare( "SELECT version FROM $datas_table_name WHERE name = %s AND type = 2", $plugin_name ), ARRAY_A );
 				$plugin_old_version = $result['version'];
@@ -46,7 +46,7 @@ class MJUHPluginLogger {
 				// テーマの情報を取得
 				$theme_data = wp_get_theme( $theme );
 				$theme_name = $theme_data['Name'];
-				$type = 1; //2:テーマ
+				$type = 1;
 				$state = 'updated';
 				$result = $wpdb->get_row( $wpdb->prepare( "SELECT version FROM $datas_table_name WHERE name = %s AND type = 1", $theme_name ), ARRAY_A );
 				$theme_old_version = $result['version'];
@@ -114,10 +114,10 @@ class MJUHPluginLogger {
 		$plugin_new_version = $plugin_data['Version'];
 		$result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $datas_table_name WHERE name = %s AND type = 2", $plugin_name ), ARRAY_A );
 		if( !$result ) {
-			//datasテーブルに存在しない場合はdatasテーブルに新規登録
+			// datasテーブルに存在しない場合はdatasテーブルに新規登録
 			$mjuh_database->save_data( $plugin_name, $plugin_new_version, $type );
 		} else {
-			//datasテーブルに存在する場合はdatasテーブルの該当プラグインを更新
+			// datasテーブルに存在する場合はdatasテーブルの該当プラグインを更新
 			$mjuh_database->update_data( $plugin_name, $plugin_new_version, $type );
 		}
 
@@ -143,7 +143,7 @@ class MJUHPluginLogger {
 		// プラグインの情報を取得
 		$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin, true, false );
 		$plugin_name = $plugin_data['Name'];
-		$type = 2; //2:プラグイン
+		$type = 2;
 		$state = 'deactivated';
 		$plugin_version = $plugin_data['Version'];
 
