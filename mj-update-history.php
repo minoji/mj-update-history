@@ -1,14 +1,13 @@
 <?php
 /*
 Plugin Name: MJ UPDATE HISTORY
-Description: WordPress coreやプラグイン、テーマのアップデート履歴を出力するプラグインです。
+Description: MJ UPDATE HISTORY is a plugin that can display a list in WordPress Core, Plugin, Theme Update History Recording, Administration screen, and output to csv.
 Author: minoji
 Version: 0.1.1
 */
 
 define( 'MJUH_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'MJUH_DATABASE_VERSION', '0.1.2' );
-
 
 require_once( MJUH_PLUGIN_DIR . 'classes/admin.php' );
 require_once( MJUH_PLUGIN_DIR . 'classes/database.php' );
@@ -17,6 +16,11 @@ require_once( MJUH_PLUGIN_DIR . 'classes/loggers/plugin.php' );
 $mjuh_database = new MJUHDatabase;
 $mjuh_admin = new MJUHAdmin;
 $mjuh_plugin_logger = new MJUHPluginLogger;
+
+add_action( 'plugins_loaded', 'mj_update_history_textdomain' );
+function mj_update_history_textdomain() {
+	load_plugin_textdomain( 'mj-update-history', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+}
 
 /* アクティベート時にデータベースのバージョンチェックし存在しなければデータベースインストール */
 register_activation_hook( __FILE__, array( $mjuh_database, 'install_database' ) );

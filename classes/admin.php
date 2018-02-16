@@ -41,8 +41,8 @@ class MJUHAdmin {
 		}
 
 		add_menu_page(
-			'作業履歴',    /* HTMLのページタイトル */
-			'作業履歴',    /* 管理画面メニューの表示名 */
+			__('Update History', 'mj-update-history'),    /* HTMLのページタイトル */
+			__('Update History', 'mj-update-history'),    /* 管理画面メニューの表示名 */
 			'administrator',  /* この機能を利用できるユーザ */
 			'mj_update_history',        /* urlに入る名前 */
 			array( $this,'admin_page' )   /* 機能を提供するメソッド */
@@ -75,11 +75,11 @@ class MJUHAdmin {
 		$mj_update_log_table->prepare_items();
 
 		echo '<h1>';
-		echo _e('UPDATE HISTORY', 'mj-update-history');
+		echo __('Update History', 'mj-update-history');
 		echo '</h1>';
 		echo '<form method="get">';
 		echo '<input type="hidden" name="page" value="' . $_REQUEST['page'] . '">';
-		$mj_update_log_table->search_box('検索', 'search');
+		$mj_update_log_table->search_box( __('Search', 'mj-update-history'), 'search');
 		$mj_update_log_table->display();
 		echo '</form>';
 
@@ -100,9 +100,9 @@ class MJUHAdmin {
 					break;
 
 				case 'type':
-					if( $item['type'] === '0' ) { $row[ $column ] = 'WordPress'; };
-					if( $item['type'] === '1' ) { $row[ $column ] = 'Theme'; };
-					if( $item['type'] === '2' ) { $row[ $column ] = 'Plugin'; };
+					if( $item['type'] === '0' ) { $row[ $column ] = __('WordPress', 'mj-update-history'); };
+					if( $item['type'] === '1' ) { $row[ $column ] = __('Theme', 'mj-update-history'); };
+					if( $item['type'] === '2' ) { $row[ $column ] = __('Plugin', 'mj-update-history'); };
 					break;
 
 				case 'state':

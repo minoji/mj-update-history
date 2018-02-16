@@ -183,12 +183,12 @@ class MJUpdateLogTable extends WP_List_Table {
 	 **************************************************************************/
 	function get_columns(){
 		$columns = array(
-			'date'        => '作業日',
-			'name'        => '名前',
-			'type'        => 'タイプ',
-			'state'       => '作業内容',
-			'old_version' => '旧バージョン',
-			'new_version' => '新バージョン'
+			'date'        => __('Date', 'mj-update-history'),
+			'name'        => __('Name', 'mj-update-history'),
+			'type'        => __('Type', 'mj-update-history'),
+			'state'       => __('State', 'mj-update-history'),
+			'old_version' => __('Old Version', 'mj-update-history'),
+			'new_version' => __('New Version', 'mj-update-history')
 		);
 		return $columns;
 	}
@@ -270,21 +270,21 @@ class MJUpdateLogTable extends WP_List_Table {
 
 			if ($types) {
 				echo '<select name="type">';
-				echo '<option value="">All Type</option>';
+				echo '<option value="">' . __('All Type', 'mj-update-history') . '</option>';
 
 				foreach ($types as $type) {
 					$type_value = '';
 					switch ( $type ) {
 						case 0:
-							$type_value = 'WordPress';
+							$type_value = __('WordPress', 'mj-update-history');
 							break;
 
 						case 1:
-							$type_value = 'Theme';
+							$type_value = __('Theme', 'mj-update-history');
 							break;
 
 						case 2:
-							$type_value = 'Plugin';
+							$type_value = __('Plugin', 'mj-update-history');
 							break;
 					}
 					$selected = '';
@@ -303,7 +303,7 @@ class MJUpdateLogTable extends WP_List_Table {
 
 			if ($states) {
 				echo '<select name="state">';
-				echo '<option value="">All State</option>';
+				echo '<option value="">' . __('All State', 'mj-update-history') . '</option>';
 
 				foreach ($states as $state) {
 					$selected = '';
@@ -315,12 +315,12 @@ class MJUpdateLogTable extends WP_List_Table {
 				echo '</select>';
 			}
 
-			submit_button('Filter', 'button', null, false);
+			submit_button( __('Filter', 'mj-update-history'), 'button', null, false);
 			echo '</div>';
 		}
 		if ($which == "bottom") {
 			echo '<button type="submit" name="download-log" class="button button-primary" value="download">';
-			echo 'Download CSV file';
+			echo __('Download CSV file', 'mj-update-history');
 			echo '</button>';
 		}
 
