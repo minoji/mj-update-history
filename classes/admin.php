@@ -116,6 +116,10 @@ class MJUHAdmin {
 				case 'new_version':
 					$row[ $column ] = $item['new_version'];
 					break;
+
+				case 'user_id':
+					$row[ $column ] = $item['user_id'];
+					break;
 			}
 		}
 

@@ -127,7 +127,7 @@ class MJUpdateLogTable extends WP_List_Table {
 		switch($column_name){
 			case 'date':
 			case 'name':
-			// case 'type':function column_stateで処理(num to name)
+			// case 'type':function column_typeで処理(num to name)
 			case 'state':
 			case 'old_version':
 			case 'new_version':
@@ -167,6 +167,15 @@ class MJUpdateLogTable extends WP_List_Table {
 		}
 	}
 
+	function column_user_id($item){
+		$user = get_userdata( $item['user_id'] );
+		if( $user ) {
+			return $user->user_login;
+		} else {
+			return null;
+		}
+	}
+
 
 	/** ************************************************************************
 	 * REQUIRED! This method dictates the table's columns and titles. This should
@@ -188,7 +197,8 @@ class MJUpdateLogTable extends WP_List_Table {
 			'type'        => __('Type', 'mj-update-history'),
 			'state'       => __('State', 'mj-update-history'),
 			'old_version' => __('Old Version', 'mj-update-history'),
-			'new_version' => __('New Version', 'mj-update-history')
+			'new_version' => __('New Version', 'mj-update-history'),
+			'user_id'     => __('User Name', 'mj-update-history')
 		);
 		return $columns;
 	}
@@ -215,7 +225,8 @@ class MJUpdateLogTable extends WP_List_Table {
 			'type'        => array('type', false),
 			'state'       => array('state', false),
 			'old_version' => array('old_version', false),
-			'new_version' => array('new_version', false)
+			'new_version' => array('new_version', false),
+			'user_id'     => array('user_id', false)
 		);
 		return $sortable_columns;
 	}
@@ -256,6 +267,9 @@ class MJUpdateLogTable extends WP_List_Table {
 			}
 			if (!isset($_REQUEST['state'])) {
 				$_REQUEST['state'] = '';
+			}
+			if (!isset($_REQUEST['user_id'])) {
+				$_REQUEST['user_id'] = '';
 			}
 
 
@@ -412,6 +426,9 @@ class MJUpdateLogTable extends WP_List_Table {
 		}
 		if ( isset( $_REQUEST['state'] ) && $_REQUEST['state'] !== '' ) {
 			$where .= $wpdb->prepare( ' AND `state` = %s', strtolower( $_REQUEST['state'] ) );
+		}
+		if ( isset( $_REQUEST['user_id'] ) && $_REQUEST['user_id'] !== '' ) {
+			$where .= $wpdb->prepare( ' AND `user_id` = %s', strtolower( $_REQUEST['user_id'] ) );
 		}
 
 		$query = "SELECT * FROM $logs_table_name $where ORDER BY date DESC;";

@@ -45,6 +45,7 @@ class MJUHDatabase {
 			state varchar(55) NOT NULL,
 			old_version varchar(55) NULL,
 			new_version varchar(55) NOT NULL,
+			user_id bigint(9) NOT NULL ,
 			date datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 			UNIQUE KEY id (id)
 		) $charset_collate;";
@@ -181,7 +182,7 @@ class MJUHDatabase {
 	/**
 	* 作業logテーブル'mjuh_datas'へプラグイン/テーマ/コアの更新作業logを記録する
 	*/
-	function save_log( $name, $type, $state, $old_version, $new_version ) {
+	function save_log( $name, $type, $state, $old_version, $new_version, $user_id ) {
 
 		global $wpdb;
 		$logs_table_name = $wpdb->prefix . 'mjuh_logs';
@@ -198,6 +199,7 @@ class MJUHDatabase {
 				'state'       => $state,
 				'old_version' => $old_version,
 				'new_version' => $new_version,
+				'user_id'     => $user_id,
 				'date'        => $date
 			),
 			array(
@@ -205,6 +207,7 @@ class MJUHDatabase {
 				'%d',
 				'%s',
 				'%s',
+				'%d',
 				'%s'
 			)
 		);

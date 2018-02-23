@@ -15,6 +15,8 @@ class MJUHPluginLogger {
 		require_once( MJUH_PLUGIN_DIR . 'classes/database.php' );
 		$mjuh_database = new MJUHDatabase;
 
+		$user_id = $this->get_user_id();
+
 		// 更新がプラグインの場合
 		if ( $options['action'] == 'update' && $options['type'] == 'plugin' ){
 
@@ -30,7 +32,7 @@ class MJUHPluginLogger {
 				$plugin_new_version = $plugin_data['Version'];
 
 				// logsテーブルに登録
-				$mjuh_database->save_log( $plugin_name, $type, $state, $plugin_old_version, $plugin_new_version );
+				$mjuh_database->save_log( $plugin_name, $type, $state, $plugin_old_version, $plugin_new_version, $user_id );
 				// datasテーブルへも更新
 				$mjuh_database->update_data( $plugin_name, $plugin_new_version, $type );
 
@@ -53,7 +55,7 @@ class MJUHPluginLogger {
 				$theme_new_version = $theme_data['Version'];
 
 				// logsテーブルに登録
-				$mjuh_database->save_log( $theme_name, $type, $state, $theme_old_version, $theme_new_version );
+				$mjuh_database->save_log( $theme_name, $type, $state, $theme_old_version, $theme_new_version, $user_id );
 				// datasテーブルへも更新
 				$mjuh_database->update_data( $theme_name, $theme_new_version, $type );
 
@@ -77,6 +79,8 @@ class MJUHPluginLogger {
 		require_once( MJUH_PLUGIN_DIR . 'classes/database.php' );
 		$mjuh_database = new MJUHDatabase;
 
+		$user_id = $this->get_user_id();
+
 		// コア情報取得
 		$core_name = 'WordPress_Core';
 		$type = 0;
@@ -86,7 +90,7 @@ class MJUHPluginLogger {
 		$core_old_version = $result['version'];
 
 		// logsテーブルに登録
-		$mjuh_database->save_log( $core_name, $type, $state, $core_old_version, $core_new_version );
+		$mjuh_database->save_log( $core_name, $type, $state, $core_old_version, $core_new_version, $user_id );
 		// datasテーブルへも更新
 		$mjuh_database->update_data( $core_name, $core_new_version, $type );
 
@@ -106,6 +110,8 @@ class MJUHPluginLogger {
 		require_once( MJUH_PLUGIN_DIR . 'classes/database.php' );
 		$mjuh_database = new MJUHDatabase;
 
+		$user_id = $this->get_user_id();
+
 		// プラグインの情報を取得
 		$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin, true, false );
 		$plugin_name = $plugin_data['Name'];
@@ -122,7 +128,7 @@ class MJUHPluginLogger {
 		}
 
 		// logsテーブルに登録
-		$mjuh_database->save_log( $plugin_name, $type, $state, null, $plugin_new_version );
+		$mjuh_database->save_log( $plugin_name, $type, $state, null, $plugin_new_version, $user_id );
 
 	}
 
@@ -140,6 +146,8 @@ class MJUHPluginLogger {
 		require_once( MJUH_PLUGIN_DIR . 'classes/database.php' );
 		$mjuh_database = new MJUHDatabase;
 
+		$user_id = $this->get_user_id();
+
 		// プラグインの情報を取得
 		$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin, true, false );
 		$plugin_name = $plugin_data['Name'];
@@ -148,9 +156,21 @@ class MJUHPluginLogger {
 		$plugin_version = $plugin_data['Version'];
 
 		// logsテーブルに登録
-		$mjuh_database->save_log( $plugin_name, $type, $state, null, $plugin_version );
+		$mjuh_database->save_log( $plugin_name, $type, $state, null, $plugin_version, $user_id );
 
 	}
 
+
+	/**
+	* ユーザーIDの取得
+	*/
+	function get_user_id() {
+		$user = wp_get_current_user();
+		if ( empty( $user->ID ) ) {
+			return 0;
+		} else {
+			return $user->ID;
+		}
+	}
 
 }
