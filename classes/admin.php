@@ -24,7 +24,6 @@ class MJUHAdmin {
 
 		if( isset( $_REQUEST['download-log'] ) ) {
 			// ダウンロードの場合
-
 			require_once( MJUH_PLUGIN_DIR . '/lib/table.php' );
 			$mj_update_log_table = new MJUpdateLogTable();
 			$mj_update_log_table->prepare_items();
@@ -37,7 +36,22 @@ class MJUHAdmin {
 			if ( $_REQUEST['download-log'] === 'download' ) {
 				$this->download( $data, $columns );
 			}
+		}
 
+		if( isset( $_REQUEST['email-log'] ) ) {
+			// メールの場合
+			require_once( MJUH_PLUGIN_DIR . '/lib/table.php' );
+			$mj_update_log_table = new MJUpdateLogTable();
+			$mj_update_log_table->prepare_items();
+
+			$items = $mj_update_log_table->data;
+			$columns = $mj_update_log_table->get_columns();
+
+			$data = $this->set_data( $items, $columns );
+
+			if ( $_REQUEST['email-log'] === 'email' ) {
+				$this->send_email( $data );
+			}
 		}
 
 		add_menu_page(
@@ -74,6 +88,7 @@ class MJUHAdmin {
 		$mj_update_log_table = new MJUpdateLogTable();
 		$mj_update_log_table->prepare_items();
 
+		echo '<div class="wrap">';
 		echo '<h1>';
 		echo __('Update History', 'mj-update-history');
 		echo '</h1>';
@@ -82,6 +97,7 @@ class MJUHAdmin {
 		$mj_update_log_table->search_box( __('Search', 'mj-update-history'), 'search');
 		$mj_update_log_table->display();
 		echo '</form>';
+		echo '</div>';
 
 	}
 
@@ -148,7 +164,7 @@ class MJUHAdmin {
 	function download( $data, $columns ) {
 
 		header( 'Content-type: text/csv' );
-		header( 'Content-Disposition: attachment; filename="activity-log-export.csv"' );
+		header( 'Content-Disposition: attachment; filename="export-log.csv"' );
 
 		$output = join( ',', array_values( $columns ) ) . "\n";
 		foreach ( $data as $row ) {
@@ -156,6 +172,25 @@ class MJUHAdmin {
 		}
 
 		echo $output; // @codingStandardsIgnoreLine text-only output
+
+		exit;
+
+	}
+
+
+	/**
+	 * メール送信
+	 */
+	function send_email( $data ) {
+
+		// set $to
+		$user = wp_get_current_user();
+		$to = $user -> user_email;
+
+		$subject = __('wordpress update log by mj update history');
+		$message = $data;
+
+		wp_mail ( $to, $subject, $message );
 
 		exit;
 

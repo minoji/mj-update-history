@@ -258,7 +258,7 @@ class MJUpdateLogTable extends WP_List_Table {
 
 	function extra_tablenav( $which )
 	{
-		if ($which == "top") {
+		if ( $which == "top" ) {
 			global $wpdb;
 			$logs_table_name = $wpdb->prefix . 'mjuh_logs';
 
@@ -277,6 +277,8 @@ class MJUpdateLogTable extends WP_List_Table {
 
 			$query = $wpdb->get_results('select * from ' . $logs_table_name . ' order by name asc', ARRAY_A);
 
+			$this->select_months();
+
 			// set type_array for select
 			$types_array = array_column($query, 'type');
 			$types = array_unique($types_array);
@@ -284,7 +286,7 @@ class MJUpdateLogTable extends WP_List_Table {
 
 			if ($types) {
 				echo '<select name="type">';
-				echo '<option value="">' . __('All Type', 'mj-update-history') . '</option>';
+				echo '<option value="">' . __('All Types', 'mj-update-history') . '</option>';
 
 				foreach ($types as $type) {
 					$type_value = '';
@@ -317,7 +319,7 @@ class MJUpdateLogTable extends WP_List_Table {
 
 			if ($states) {
 				echo '<select name="state">';
-				echo '<option value="">' . __('All State', 'mj-update-history') . '</option>';
+				echo '<option value="">' . __('All States', 'mj-update-history') . '</option>';
 
 				foreach ($states as $state) {
 					$selected = '';
@@ -329,13 +331,41 @@ class MJUpdateLogTable extends WP_List_Table {
 				echo '</select>';
 			}
 
+			// set user_array for select
+			$user_array = array_column($query, 'user_id');
+			$users = array_unique($user_array);
+			sort($users);
+
+			if ($users) {
+				echo '<select name="user">';
+				echo '<option value="">' . __('All users', 'mj-update-history') . '</option>';
+
+				foreach ($users as $user_id) {
+					$selected = '';
+					if ($_GET['user'] == $user_id) {
+						$selected = ' selected = "selected"';
+					}
+					$user_info = get_userdata( $user_id );
+					if ( empty( $user_info ) ) {
+						$user_name = 0;
+					} else {
+						$user_name = $user_info->data->user_login;
+					}
+					echo '<option value="' . $user_id . '"' . $selected . '>' . $user_name . '</option>';
+				}
+				echo '</select>';
+			}
+
 			submit_button( __('Filter', 'mj-update-history'), 'button', null, false);
 			echo '</div>';
 		}
-		if ($which == "bottom") {
+		if ( $which == "bottom" ) {
 			echo '<button type="submit" name="download-log" class="button button-primary" value="download">';
-			echo __('Download CSV file', 'mj-update-history');
+			echo __( 'Download CSV file', 'mj-update-history' );
 			echo '</button>';
+			// echo '<button type="submit" name="email-log" class="button button-primary" value="email">';
+			// echo __( 'Send E-Mail', 'mj-update-history' );
+			// echo '</button>';
 		}
 
 	}
@@ -350,6 +380,64 @@ class MJUpdateLogTable extends WP_List_Table {
 			}
 		} ) );
 		return $filtered_table_data;
+	}
+
+
+	/**
+	 * Display a monthly dropdown for filtering items
+	 *
+	 * @access protected
+	 */
+	function select_months() {
+		global $wpdb, $wp_locale;
+		$logs_table_name = $wpdb->prefix . 'mjuh_logs';
+
+		$meta_key = 'date';
+		$months = $wpdb->get_results('
+			SELECT DISTINCT YEAR( date ) AS year, MONTH( date ) AS month
+			FROM ' . $logs_table_name . '
+			ORDER BY date DESC
+		');
+
+		/**
+		 * Filters the 'Months' drop-down results.
+		 *
+		 * @since 3.7.0
+		 *
+		 * @param object $months    The months drop-down query results.
+		 * @param string $post_type The post type.
+		 */
+		$months = apply_filters( 'months_dropdown_results', $months );
+
+		$month_count = count( $months );
+
+		if ( !$month_count || ( 1 == $month_count && 0 == $months[0]->month ) )
+			return;
+
+		$m = isset( $_GET['m'] ) ? (int) $_GET['m'] : 0;
+?>
+		<label for="filter-by-date" class="screen-reader-text"><?php _e( 'Filter by date' ); ?></label>
+		<select name="m" id="filter-by-date">
+			<option<?php selected( $m, 0 ); ?> value="0"><?php _e( 'All dates' ); ?></option>
+<?php
+		foreach ( $months as $arc_row ) {
+
+			if ( 0 == $arc_row->year )
+				continue;
+
+			$month = zeroise( $arc_row->month, 2 );
+			$year = $arc_row->year;
+
+			printf( "<option %s value='%s'>%s</option>\n",
+				selected( $m, $year . $month, false ),
+				esc_attr( $arc_row->year . $month ),
+				/* translators: 1: month name, 2: 4-digit year */
+				sprintf( __( '%1$s %2$d' ), $wp_locale->get_month( $month ), $year )
+			);
+		}
+?>
+		</select>
+<?php
 	}
 
 
@@ -430,10 +518,13 @@ class MJUpdateLogTable extends WP_List_Table {
 		if ( isset( $_REQUEST['user_id'] ) && $_REQUEST['user_id'] !== '' ) {
 			$where .= $wpdb->prepare( ' AND `user_id` = %s', strtolower( $_REQUEST['user_id'] ) );
 		}
+		if ( isset( $_REQUEST['m'] ) && $_REQUEST['m'] !== '' && $_REQUEST['m'] !== '0' ) {
+			require_once( ABSPATH . 'wp-load.php' );
+			$where .= $wpdb->prepare( ' AND (DATE_FORMAT(date, %s) = %s)', '%Y%m', $_REQUEST['m'] );
+		}
 
 		$query = "SELECT * FROM $logs_table_name $where ORDER BY date DESC;";
 		$data = $wpdb->get_results($query, ARRAY_A );
-
 
 		/**
 		 * if a search was performed.
@@ -453,8 +544,8 @@ class MJUpdateLogTable extends WP_List_Table {
 		 * sorting technique would be unnecessary.
 		 */
 		function usort_reorder($a,$b){
-			$orderby = (!empty($_REQUEST['orderby'])) ? $_REQUEST['orderby'] : 'name'; //If no sort, default to title
-			$order = (!empty($_REQUEST['order'])) ? $_REQUEST['order'] : 'asc'; //If no order, default to asc
+			$orderby = (!empty($_REQUEST['orderby'])) ? $_REQUEST['orderby'] : 'date'; //If no sort, default to title
+			$order = (!empty($_REQUEST['order'])) ? $_REQUEST['order'] : 'desc'; //If no order, default to asc
 			$result = strcmp($a[$orderby], $b[$orderby]); //Determine sort order
 			return ($order==='asc') ? $result : -$result; //Send final sort direction to usort
 		}

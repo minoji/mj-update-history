@@ -7,7 +7,7 @@ Version: 0.1.1
 */
 
 define( 'MJUH_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( 'MJUH_DATABASE_VERSION', '0.1.3' );
+define( 'MJUH_DATABASE_VERSION', '0.1.5' );
 
 require_once( MJUH_PLUGIN_DIR . 'classes/admin.php' );
 require_once( MJUH_PLUGIN_DIR . 'classes/database.php' );
@@ -47,9 +47,15 @@ add_filter( 'activated_plugin', array( $mjuh_plugin_logger, 'activated' ), 10, 2
 
 /**
 * Plugin
-* 無効化時に該当するプラグイン名とバージョンを取得してデータベースから削除する
+* 無効化時に該当するプラグイン名とバージョンを取得してデータベースに保存する
 */
 add_filter( 'deactivated_plugin', array( $mjuh_plugin_logger, 'deactivated' ), 10, 2 );
+
+/**
+* Theme
+* 変更時に旧テーマと新テーマ名を取得してデータベースに保存する
+*/
+add_filter( 'switch_theme', array( $mjuh_plugin_logger, 'changed_theme' ), 10, 2 );
 
 /**
 * Core/Theme/Plugin
