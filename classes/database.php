@@ -207,6 +207,7 @@ class MJUHDatabase {
 				'%d',
 				'%s',
 				'%s',
+				'%s',
 				'%d',
 				'%s'
 			)
