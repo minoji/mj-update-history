@@ -88,9 +88,12 @@ class MJUHAdmin {
 		$args = array(
 			'label' => __('Logs per page', 'logs'),
 			'default' => 10,
-			'option' => 'logs_per_page'
+			'option' => 'mjlh_logs_per_page'
 		);
 		add_screen_option( 'per_page', $args );
+
+		require_once( MJUH_PLUGIN_DIR . '/lib/table.php' );
+		$mj_update_log_table = new MJUpdateLogTable();
 	}
 
 

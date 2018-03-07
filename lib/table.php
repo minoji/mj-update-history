@@ -470,7 +470,7 @@ class MJUpdateLogTable extends WP_List_Table {
 		/**
 		 * First, lets decide how many records per page to show
 		 */
-		$per_page = $this->get_items_per_page( 'logs_per_page', 10 );
+		$per_page = $this->get_items_per_page( 'mjlh_logs_per_page', 10 );
 
 		/**
 		 * REQUIRED. Now we need to define our column headers. This includes a complete
