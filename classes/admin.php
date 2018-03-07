@@ -34,7 +34,8 @@ class MJUHAdmin {
 			$data = $this->set_data( $items, $columns );
 
 			if ( $_REQUEST['download-log'] === 'download' ) {
-				$this->download( $data, $columns );
+				$download_date = date_i18n( 'Y-m-d_H-i-s');
+				$this->download( $data, $columns, $download_date );
 			}
 		}
 
@@ -54,13 +55,15 @@ class MJUHAdmin {
 			}
 		}
 
-		add_menu_page(
+		$hook = add_menu_page(
 			__('Update History', 'mj-update-history'),    /* HTMLのページタイトル */
 			__('Update History', 'mj-update-history'),    /* 管理画面メニューの表示名 */
 			'administrator',  /* この機能を利用できるユーザ */
 			'mj_update_history',        /* urlに入る名前 */
 			array( $this,'admin_page' )   /* 機能を提供するメソッド */
 		);
+
+		add_action( "load-$hook", array( $this, 'admin_screen_options' ) );
 	}
 
 
@@ -75,6 +78,19 @@ class MJUHAdmin {
 			false,
 			'all'
 		);
+	}
+
+
+	/**
+	 * Setting area
+	 */
+	function admin_screen_options() {
+		$args = array(
+			'label' => __('Logs per page', 'logs'),
+			'default' => 10,
+			'option' => 'logs_per_page'
+		);
+		add_screen_option( 'per_page', $args );
 	}
 
 
@@ -107,7 +123,7 @@ class MJUHAdmin {
 		foreach ( array_keys( $columns ) as $column ) {
 			switch ( $column ) {
 				case 'date':
-					$row[ $column ] = date( 'Y/m/d H:i:s', $time_stamp  =strtotime( $item['date'] ) );
+					$row[ $column ] = date_i18n( 'Y/m/d H:i:s', $time_stamp  =strtotime( $item['date'] ) );
 //					$row[ $column ] = get_date_from_gmt( $date, 'Y/m/d h:i:s A' );
 					break;
 
@@ -161,10 +177,10 @@ class MJUHAdmin {
 	/**
 	 * ダウンロード
 	 */
-	function download( $data, $columns ) {
+	function download( $data, $columns, $download_date ) {
 
 		header( 'Content-type: text/csv' );
-		header( 'Content-Disposition: attachment; filename="export-log.csv"' );
+		header( 'Content-Disposition: attachment; filename="export-log_' . $download_date . '.csv"' );
 
 		$output = join( ',', array_values( $columns ) ) . "\n";
 		foreach ( $data as $row ) {

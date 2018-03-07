@@ -22,6 +22,7 @@ function mj_update_history_textdomain() {
 	load_plugin_textdomain( 'mj-update-history', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 }
 
+
 /* アクティベート時にデータベースのバージョンチェックし存在しなければデータベースインストール */
 register_activation_hook( __FILE__, array( $mjuh_database, 'install_database' ) );
 /* プラグインロード時にデータベースのバージョンチェックし存在しなければデータベースインストール */
@@ -32,6 +33,7 @@ add_action( 'plugins_loaded', array( $mjuh_database, 'check_database_version' ) 
 /* 管理画面設定 */
 add_action( 'admin_menu', array( $mjuh_admin, 'admin_menu_action' ) );            /* パネル作成 */
 add_action( 'admin_enqueue_scripts', array( $mjuh_admin, 'admin_enqueue_scripts' ) );  /* CSS出力 */
+
 
 /**
 * Plugin
