@@ -304,7 +304,7 @@ class MJUpdateLogTable extends WP_List_Table {
 							break;
 					}
 					$selected = '';
-					if ($_GET['type'] == $type) {
+					if ( isset( $_GET['type'] ) && $_GET['type'] == $type) {
 						$selected = ' selected = "selected"';
 					}
 					echo '<option value="' . $type . '"' . $selected . '>' . $type_value . '</option>';
@@ -323,7 +323,7 @@ class MJUpdateLogTable extends WP_List_Table {
 
 				foreach ($states as $state) {
 					$selected = '';
-					if ($_GET['state'] == $state) {
+					if ( isset( $_GET['state'] ) && $_GET['state'] == $state) {
 						$selected = ' selected = "selected"';
 					}
 					echo '<option value="' . $state . '"' . $selected . '>' . $state . '</option>';
@@ -342,7 +342,7 @@ class MJUpdateLogTable extends WP_List_Table {
 
 				foreach ($users as $user_id) {
 					$selected = '';
-					if ($_GET['user'] == $user_id) {
+					if ( isset( $_GET['user'] ) && $_GET['user'] == $user_id) {
 						$selected = ' selected = "selected"';
 					}
 					$user_info = get_userdata( $user_id );
@@ -479,9 +479,9 @@ class MJUpdateLogTable extends WP_List_Table {
 		 * can be defined in another method (as we've done here) before being
 		 * used to build the value for our _column_headers property.
 		 */
-		$columns = $this->get_columns();
-		$hidden = array();
-		$sortable = $this->get_sortable_columns();
+		// $columns = $this->get_columns();
+		// $hidden = array();
+		// $sortable = $this->get_sortable_columns();
 
 
 		/**
@@ -490,7 +490,8 @@ class MJUpdateLogTable extends WP_List_Table {
 		 * 3 other arrays. One for all columns, one for hidden columns, and one
 		 * for sortable columns.
 		 */
-		$this->_column_headers = array($columns, $hidden, $sortable);
+		// $this->_column_headers = array($columns, $hidden, $sortable);
+		$this->_column_headers = $this->get_column_info();
 
 
 		/**

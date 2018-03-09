@@ -37,7 +37,7 @@ add_action( 'admin_enqueue_scripts', array( $mjuh_admin, 'admin_enqueue_scripts'
 add_filter('set-screen-option', 'mjlh_logs_per_page_set_option', 10, 3);
 function mjlh_logs_per_page_set_option($status, $option, $value) {
 	if ( 'mjlh_logs_per_page' == $option ) return $value;
-	return $status;
+	return $value;
 }
 
 
