@@ -467,6 +467,9 @@ class MJUpdateLogTable extends WP_List_Table {
 	function prepare_items() {
 		global $wpdb; //This is used only if making any database queries
 
+		// resolve issue 'Request-URI Too Long'
+		$_SERVER['REQUEST_URI'] = remove_query_arg( '_wp_http_referer', $_SERVER['REQUEST_URI'] );
+
 		/**
 		 * First, lets decide how many records per page to show
 		 */
@@ -515,8 +518,8 @@ class MJUpdateLogTable extends WP_List_Table {
 		if ( isset( $_REQUEST['state'] ) && $_REQUEST['state'] !== '' ) {
 			$where .= $wpdb->prepare( ' AND `state` = %s', strtolower( $_REQUEST['state'] ) );
 		}
-		if ( isset( $_REQUEST['user_id'] ) && $_REQUEST['user_id'] !== '' ) {
-			$where .= $wpdb->prepare( ' AND `user_id` = %s', strtolower( $_REQUEST['user_id'] ) );
+		if ( isset( $_REQUEST['user'] ) && $_REQUEST['user'] !== '' ) {
+			$where .= $wpdb->prepare( ' AND `user_id` = %s', strtolower( $_REQUEST['user'] ) );
 		}
 		if ( isset( $_REQUEST['m'] ) && $_REQUEST['m'] !== '' && $_REQUEST['m'] !== '0' ) {
 			require_once( ABSPATH . 'wp-load.php' );
