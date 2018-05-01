@@ -33,9 +33,9 @@ class MJUHAdmin {
 
 			$data = $this->set_data( $items, $columns );
 
-			if ( $_REQUEST['download-log'] === 'download' ) {
+			if ( $_REQUEST['download-log'] === 'download-csv' ) {
 				$download_date = date_i18n( 'Y-m-d_H-i-s');
-				$this->download( $data, $columns, $download_date );
+				$this->download_csv( $data, $columns, $download_date );
 			}
 		}
 
@@ -48,10 +48,43 @@ class MJUHAdmin {
 			$items = $mj_update_log_table->data;
 			$columns = $mj_update_log_table->get_columns();
 
-			$data = $this->set_data( $items, $columns );
+			$data_array = $this->set_data( $items, $columns );
+
+			$data = get_bloginfo( 'name' ) . ' ' . __('update history', 'mj-update-history');
+			$data .= "\r\n\r\n";
+			foreach ( $data_array as $item ) {
+				$data .= __('name', 'mj-update-history') . ':' . $item['name'];
+				$data .= "\r\n";
+				$data .= __('date', 'mj-update-history') . ':' . date_i18n( 'Y/m/d H:i:s', $time_stamp  =strtotime( $item['date'] ) );
+				$data .= "\r\n";
+				$data .= __('type', 'mj-update-history') . ':';
+				$data .= $item['type'];
+				$data .= "\r\n";
+				$data .= __('state', 'mj-update-history') . ':' . $item['state'];
+				$data .= "\r\n";
+				$data .= __('old_version', 'mj-update-history') . ':' . $item['old_version'];
+				$data .= "\r\n";
+				$data .= __('new_version', 'mj-update-history') . ':' . $item['new_version'];
+				$data .= "\r\n";
+				$data .= __('user_id', 'mj-update-history') . ':' . $item['user_id'];
+				$data .= "\r\n";
+				$data .= "\r\n";
+			}
 
 			if ( $_REQUEST['email-log'] === 'email' ) {
-				$this->send_email( $data );
+				$chk_sending = $this->send_email( $data );
+				if( $chk_sending ){
+					$message = 'success_message';
+				} else {
+					$message = 'error_message';
+				}
+				function success_message() {
+					echo '<div class="updated"><p>' . __('Message sent successfully', 'mj-update-history') . '</p></div>';
+				}
+				function error_message() {
+					echo '<div class="error"><p>' . __('Messgae couldn’t be sent', 'mj-update-history') . '</p></div>';
+				}
+				add_action( 'admin_notices', $message );
 			}
 		}
 
@@ -178,9 +211,9 @@ class MJUHAdmin {
 
 
 	/**
-	 * ダウンロード
+	 * ダウンロードCSV
 	 */
-	function download( $data, $columns, $download_date ) {
+	function download_csv( $data, $columns, $download_date ) {
 
 		header( 'Content-type: text/csv' );
 		header( 'Content-Disposition: attachment; filename="export-log_' . $download_date . '.csv"' );
@@ -209,9 +242,7 @@ class MJUHAdmin {
 		$subject = __('wordpress update log by mj update history');
 		$message = $data;
 
-		wp_mail ( $to, $subject, $message );
-
-		exit;
+		return wp_mail( $to, $subject, $message );
 
 	}
 

@@ -360,12 +360,12 @@ class MJUpdateLogTable extends WP_List_Table {
 			echo '</div>';
 		}
 		if ( $which == "bottom" ) {
-			echo '<button type="submit" name="download-log" class="button button-primary" value="download">';
+			echo '<button type="submit" name="download-log" class="button button-primary" value="download-csv">';
 			echo __( 'Download CSV file', 'mj-update-history' );
 			echo '</button>';
-			// echo '<button type="submit" name="email-log" class="button button-primary" value="email">';
-			// echo __( 'Send E-Mail', 'mj-update-history' );
-			// echo '</button>';
+			echo '<button type="submit" name="email-log" class="button button-primary" value="email">';
+			echo __( 'Send E-Mail', 'mj-update-history' );
+			echo '</button>';
 		}
 
 	}
@@ -546,13 +546,15 @@ class MJUpdateLogTable extends WP_List_Table {
 		 * to a custom query. The returned data will be pre-sorted, and this array
 		 * sorting technique would be unnecessary.
 		 */
-		function usort_reorder($a,$b){
-			$orderby = (!empty($_REQUEST['orderby'])) ? $_REQUEST['orderby'] : 'date'; //If no sort, default to title
-			$order = (!empty($_REQUEST['order'])) ? $_REQUEST['order'] : 'desc'; //If no order, default to asc
-			$result = strcmp($a[$orderby], $b[$orderby]); //Determine sort order
-			return ($order==='asc') ? $result : -$result; //Send final sort direction to usort
+		if (!function_exists('usort_reorder')) {
+			function usort_reorder($a,$b){
+				$orderby = (!empty($_REQUEST['orderby'])) ? $_REQUEST['orderby'] : 'date'; //If no sort, default to title
+				$order = (!empty($_REQUEST['order'])) ? $_REQUEST['order'] : 'desc'; //If no order, default to asc
+				$result = strcmp($a[$orderby], $b[$orderby]); //Determine sort order
+				return ($order==='asc') ? $result : -$result; //Send final sort direction to usort
+			}
+			usort($data, 'usort_reorder');
 		}
-		usort($data, 'usort_reorder');
 
 
 		/***********************************************************************
