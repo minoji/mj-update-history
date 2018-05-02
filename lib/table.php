@@ -54,7 +54,7 @@ License: GPL2
  * Since I will be keeping this tutorial up-to-date for the foreseeable future,
  * I am going to work with the copy of the class provided in WordPress core.
  */
-if(!class_exists('WP_List_Table')){
+if ( !class_exists( 'WP_List_Table' ) ){
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
@@ -94,9 +94,9 @@ class MJUpdateLogTable extends WP_List_Table {
 
 		//Set parent defaults
 		parent::__construct( array(
-			'singular'  => 'log',       //singular name of the listed records
-			'plural'    => 'logs',      //plural name of the listed records
-			'ajax'      => false        //does this table support ajax?
+			'singular'  => 'log',   //singular name of the listed records
+			'plural'    => 'logs',  //plural name of the listed records
+			'ajax'      => false    //does this table support ajax?
 		) );
 
 	}
@@ -123,17 +123,17 @@ class MJUpdateLogTable extends WP_List_Table {
 	 * @param array $column_name The name/slug of the column to be processed
 	 * @return string Text or HTML to be placed inside the column <td>
 	 **************************************************************************/
-	function column_default($item, $column_name){
-		switch($column_name){
+	function column_default( $item, $column_name ){
+		switch( $column_name ){
 			case 'date':
 			case 'name':
 			// case 'type':function column_typeで処理(num to name)
 			case 'state':
 			case 'old_version':
 			case 'new_version':
-				return $item[$column_name];
+				return $item[ $column_name ];
 			default:
-				return $item[$column_name];
+				return $item[ $column_name ];
 				// return print_r($item,true); //Show the whole array for troubleshooting purposes
 		}
 	}
@@ -155,21 +155,21 @@ class MJUpdateLogTable extends WP_List_Table {
 	 * @param array $item A singular item (one full row's worth of data)
 	 * @return string Text to be placed inside the column <td> (movie title only)
 	 **************************************************************************/
-	function column_type($item){
-		if( $item['type'] === '0' ) {
+	function column_type( $item ){
+		if ( $item['type'] === '0' ) {
 			return 'WordPress';
-		} elseif( $item['type'] === '1' ) {
+		} elseif ( $item['type'] === '1' ) {
 			return 'Theme';
-		} elseif( $item['type'] === '2' ) {
+		} elseif ( $item['type'] === '2' ) {
 			return 'Plugin';
 		} else {
 			return 'none';
 		}
 	}
 
-	function column_user_id($item){
+	function column_user_id( $item ){
 		$user = get_userdata( $item['user_id'] );
-		if( $user ) {
+		if ( $user ) {
 			return $user->user_login;
 		} else {
 			return null;
@@ -192,13 +192,13 @@ class MJUpdateLogTable extends WP_List_Table {
 	 **************************************************************************/
 	function get_columns(){
 		$columns = array(
-			'date'        => __('Date', 'mj-update-history'),
-			'name'        => __('Name', 'mj-update-history'),
-			'type'        => __('Type', 'mj-update-history'),
-			'state'       => __('State', 'mj-update-history'),
-			'old_version' => __('Old Version', 'mj-update-history'),
-			'new_version' => __('New Version', 'mj-update-history'),
-			'user_id'     => __('User Name', 'mj-update-history')
+			'date'        => __( 'Date', 'mj-update-history' ),
+			'name'        => __( 'Name', 'mj-update-history' ),
+			'type'        => __( 'Type', 'mj-update-history' ),
+			'state'       => __( 'State', 'mj-update-history' ),
+			'old_version' => __( 'Old Version', 'mj-update-history' ),
+			'new_version' => __( 'New Version', 'mj-update-history' ),
+			'user_id'     => __( 'User Name', 'mj-update-history' )
 		);
 		return $columns;
 	}
@@ -220,13 +220,13 @@ class MJUpdateLogTable extends WP_List_Table {
 	 **************************************************************************/
 	function get_sortable_columns() {
 		$sortable_columns = array(
-			'date'        => array('date', true), //true means it's already sorted
-			'name'        => array('name', false),
-			'type'        => array('type', false),
-			'state'       => array('state', false),
-			'old_version' => array('old_version', false),
-			'new_version' => array('new_version', false),
-			'user_id'     => array('user_id', false)
+			'date'        => array( 'date', true ), //true means it's already sorted
+			'name'        => array( 'name', false ),
+			'type'        => array( 'type', false ),
+			'state'       => array( 'state', false ),
+			'old_version' => array( 'old_version', false ),
+			'new_version' => array( 'new_version', false ),
+			'user_id'     => array( 'user_id', false )
 		);
 		return $sortable_columns;
 	}
@@ -256,55 +256,54 @@ class MJUpdateLogTable extends WP_List_Table {
 //	}
 
 
-	function extra_tablenav( $which )
-	{
-		if ( $which == "top" ) {
+	function extra_tablenav( $which ) {
+		if ( $which == 'top' ) {
 			global $wpdb;
 			$logs_table_name = $wpdb->prefix . 'mjuh_logs';
 
-			if (!isset($_REQUEST['type'])) {
+			if ( !isset( $_REQUEST['type'] ) ) {
 				$_REQUEST['type'] = '';
 			}
-			if (!isset($_REQUEST['state'])) {
+			if ( !isset( $_REQUEST['state'] ) ) {
 				$_REQUEST['state'] = '';
 			}
-			if (!isset($_REQUEST['user_id'])) {
+			if ( !isset( $_REQUEST['user_id'] ) ) {
 				$_REQUEST['user_id'] = '';
 			}
 
 
 			echo '<div class="alignleft actions bulkactions">';
 
-			$query = $wpdb->get_results('select * from ' . $logs_table_name . ' order by name asc', ARRAY_A);
+			$query = $wpdb->get_results( 'select * from ' . $logs_table_name . ' order by name asc', ARRAY_A );
 
 			$this->select_months();
 
 			// set type_array for select
-			$types_array = array_column($query, 'type');
-			$types = array_unique($types_array);
-			sort($types);
+			$types_array = array_column( $query, 'type' );
+			$types = array_unique( $types_array );
+			sort( $types );
 
-			if ($types) {
+			if ( $types ) {
 				echo '<select name="type">';
-				echo '<option value="">' . __('All Types', 'mj-update-history') . '</option>';
+				echo '<option value="">' . esc_html__( 'All Types', 'mj-update-history' ) . '</option>';
 
-				foreach ($types as $type) {
+				foreach ( $types as $type ) {
 					$type_value = '';
 					switch ( $type ) {
 						case 0:
-							$type_value = __('WordPress', 'mj-update-history');
+							$type_value = __( 'WordPress', 'mj-update-history' );
 							break;
 
 						case 1:
-							$type_value = __('Theme', 'mj-update-history');
+							$type_value = __( 'Theme', 'mj-update-history' );
 							break;
 
 						case 2:
-							$type_value = __('Plugin', 'mj-update-history');
+							$type_value = __( 'Plugin', 'mj-update-history' );
 							break;
 					}
 					$selected = '';
-					if ( isset( $_GET['type'] ) && $_GET['type'] == $type) {
+					if ( isset( $_GET['type'] ) && $_GET['type'] == $type ) {
 						$selected = ' selected = "selected"';
 					}
 					echo '<option value="' . $type . '"' . $selected . '>' . $type_value . '</option>';
@@ -313,13 +312,13 @@ class MJUpdateLogTable extends WP_List_Table {
 			}
 
 			// set state_array for select
-			$state_array = array_column($query, 'state');
-			$states = array_unique($state_array);
-			sort($states);
+			$state_array = array_column( $query, 'state' );
+			$states = array_unique( $state_array );
+			sort( $states );
 
-			if ($states) {
+			if ( $states ) {
 				echo '<select name="state">';
-				echo '<option value="">' . __('All States', 'mj-update-history') . '</option>';
+				echo '<option value="">' . esc_html__( 'All States', 'mj-update-history' ) . '</option>';
 
 				foreach ($states as $state) {
 					$selected = '';
@@ -332,15 +331,15 @@ class MJUpdateLogTable extends WP_List_Table {
 			}
 
 			// set user_array for select
-			$user_array = array_column($query, 'user_id');
-			$users = array_unique($user_array);
-			sort($users);
+			$user_array = array_column( $query, 'user_id' );
+			$users = array_unique( $user_array );
+			sort( $users );
 
-			if ($users) {
+			if ( $users ) {
 				echo '<select name="user">';
-				echo '<option value="">' . __('All users', 'mj-update-history') . '</option>';
+				echo '<option value="">' . esc_html__( 'All users', 'mj-update-history' ) . '</option>';
 
-				foreach ($users as $user_id) {
+				foreach ( $users as $user_id ) {
 					$selected = '';
 					if ( isset( $_GET['user'] ) && $_GET['user'] == $user_id) {
 						$selected = ' selected = "selected"';
@@ -356,15 +355,15 @@ class MJUpdateLogTable extends WP_List_Table {
 				echo '</select>';
 			}
 
-			submit_button( __('Filter', 'mj-update-history'), 'button', null, false);
+			submit_button( esc_html__( 'Filter', 'mj-update-history' ), 'button', null, false );
 			echo '</div>';
 		}
 		if ( $which == "bottom" ) {
 			echo '<button type="submit" name="download-log" class="button button-primary" value="download-csv">';
-			echo __( 'Download CSV file', 'mj-update-history' );
+			echo esc_html__( 'Download CSV file', 'mj-update-history' );
 			echo '</button>';
 			echo '<button type="submit" name="email-log" class="button button-primary" value="email">';
-			echo __( 'Send E-Mail', 'mj-update-history' );
+			echo esc_html__( 'Send E-Mail', 'mj-update-history' );
 			echo '</button>';
 		}
 

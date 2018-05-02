@@ -13,8 +13,8 @@ require_once( MJUH_PLUGIN_DIR . 'classes/admin.php' );
 require_once( MJUH_PLUGIN_DIR . 'classes/database.php' );
 require_once( MJUH_PLUGIN_DIR . 'classes/loggers/plugin.php' );
 
-$mjuh_database = new MJUHDatabase;
-$mjuh_admin = new MJUHAdmin;
+$mjuh_database      = new MJUHDatabase;
+$mjuh_admin         = new MJUHAdmin;
 $mjuh_plugin_logger = new MJUHPluginLogger;
 
 add_action( 'plugins_loaded', 'mj_update_history_textdomain' );
