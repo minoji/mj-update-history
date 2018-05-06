@@ -346,7 +346,7 @@ class MJUpdateLogTable extends WP_List_Table {
 					}
 					$user_info = get_userdata( $user_id );
 					if ( empty( $user_info ) ) {
-						$user_name = 0;
+						$user_name = 'none';
 					} else {
 						$user_name = $user_info->data->user_login;
 					}

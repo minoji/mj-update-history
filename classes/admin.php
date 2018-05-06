@@ -84,15 +84,23 @@ class MJUHAdmin {
 
 
 	/**
-	 * CSS
+	 * assets/
 	 */
 	function admin_enqueue_scripts() {
 		wp_enqueue_style(
 			'mj-update-history-style',
-			plugins_url( 'css/mj-update-history-style.css', __FILE__ ),
+			plugins_url( '../assets/css/mj-update-history-style.css', __FILE__ ),
 			false,
 			false,
 			'all'
+		);
+		wp_enqueue_script( 'jquery' );
+		wp_enqueue_script(
+			'mj-update-history-script.js',
+			plugins_url( '../assets/js/mj-update-history-script.js', __FILE__ ),
+			array( 'jquery'),
+			'1.0.0',
+			true
 		);
 	}
 
@@ -132,6 +140,10 @@ class MJUHAdmin {
 		$mj_update_log_table->search_box( __( 'Search', 'mj-update-history' ), 'search' );
 		$mj_update_log_table->display();
 		echo '</form>';
+		echo '<form action="#" id="mjuh-output-text" method="POST">';
+		echo '<input type="submit" class="button button-primary" value="' . esc_html__( 'Text output for copy', 'mj-update-history' ) . '">';
+		echo '</form>';
+		echo '<div id="mjuh-output-area"></div>';
 		echo '</div>';
 
 	}
@@ -217,6 +229,30 @@ class MJUHAdmin {
 
 
 	/**
+	 * データ作成
+	 */
+	function set_text_data() {
+		require_once( MJUH_PLUGIN_DIR . '/lib/table.php' );
+		$mj_update_log_table = new MJUpdateLogTable();
+		$mj_update_log_table->prepare_items();
+
+		$items   = $mj_update_log_table->data;
+		$columns = $mj_update_log_table->get_columns();
+
+		$data_array = $this->set_data( $items, $columns );
+
+		$data = $this->set_body( $data_array );
+
+		$response = array(
+			'message' => $data,
+		);
+
+		wp_send_json_success( $response );
+
+		wp_die();
+	}
+
+	/**
 	 * 本文作成
 	 */
 	function set_body( $data_array ) {
@@ -237,7 +273,13 @@ class MJUHAdmin {
 			if( !$item['new_version'] ) { $item['new_version'] = 'none'; }
 			$data .= $item['old_version'] . ' -> ' . $item['new_version'];
 			$data .= "\r\n";
-			$data .= $item['user_id'];
+			$user_info = get_userdata( $item['user_id'] );
+			if ( empty( $user_info ) ) {
+				$user_name = 'none';
+			} else {
+				$user_name = $user_info->data->user_login;
+			}
+			$data .= $user_name;
 			$data .= "\r\n";
 			$data .= "\r\n";
 		}
@@ -258,7 +300,7 @@ class MJUHAdmin {
 		$user = wp_get_current_user();
 		$to = $user->user_email;
 
-		$subject = __( 'WordPress update log by mj update history' );
+		$subject = get_bloginfo( 'name' ) . ' ' . __('update history', 'mj-update-history');
 		$message = $data;
 
 		return wp_mail( $to, $subject, $message );

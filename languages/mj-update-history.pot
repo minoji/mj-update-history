@@ -1,9 +1,11 @@
+#, fuzzy
 msgid ""
 msgstr ""
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "Project-Id-Version: MJ UPDATE HISTORY\n"
 "POT-Creation-Date: 2018-05-06 01:09+0900\n"
-"PO-Revision-Date: 2018-05-06 01:34+0900\n"
+"PO-Revision-Date: 2018-05-06 01:08+0900\n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,31 +18,28 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
 "esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
 "_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
-"Last-Translator: \n"
-"Language: ja\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.js\n"
 
 #: classes/admin.php:65
 msgid "Message sent successfully"
-msgstr "メールを送信しました"
+msgstr "Message sent successfully"
 
 #: classes/admin.php:68
 msgid "Messgae couldn’t be sent"
-msgstr "メールを送信できませんでした"
+msgstr "Messgae couldn’t be sent"
 
 #: classes/admin.php:75 classes/admin.php:76 classes/admin.php:128
 msgid "Update History"
-msgstr "更新履歴"
+msgstr "Update History"
 
 #: classes/admin.php:105
-#, fuzzy
 msgid "Logs per page"
-msgstr "1ページあたりのログ"
+msgstr "Logs per page"
 
 #: classes/admin.php:132
 msgid "Search"
-msgstr "検索する"
+msgstr "Search"
 
 #: classes/admin.php:157 lib/table.php:294
 msgid "WordPress"
@@ -48,104 +47,99 @@ msgstr "WordPress"
 
 #: classes/admin.php:158 lib/table.php:298
 msgid "Theme"
-msgstr "テーマ"
+msgstr "Theme"
 
 #: classes/admin.php:159 lib/table.php:302
 msgid "Plugin"
-msgstr "プラグイン"
+msgstr "Plugin"
 
 #: classes/admin.php:224 classes/admin.php:261
-#, fuzzy
 msgid "update history"
-msgstr "更新履歴"
+msgstr "update history"
 
 #: classes/admin.php:224
 msgid "items"
-msgstr "件"
+msgstr "items"
 
 #: lib/table.php:195
-#, fuzzy
 msgid "Date"
-msgstr "作業日"
+msgstr "Date"
 
 #: lib/table.php:196
-#, fuzzy
 msgid "Name"
-msgstr "名前"
+msgstr "Name"
 
 #: lib/table.php:197
-#, fuzzy
 msgid "Type"
-msgstr "タイプ"
+msgstr "Type"
 
 #: lib/table.php:198
 msgid "State"
-msgstr "状態"
+msgstr "State"
 
 #: lib/table.php:199
 msgid "Old Version"
-msgstr "旧バージョン"
+msgstr "Old Version"
 
 #: lib/table.php:200
 msgid "New Version"
-msgstr "新バージョン"
+msgstr "New Version"
 
 #: lib/table.php:201
 msgid "User Name"
-msgstr "ユーザー名"
+msgstr "User Name"
 
 #: lib/table.php:288
 msgid "All Types"
-msgstr "すべてのタイプ"
+msgstr "All Types"
 
 #: lib/table.php:321
 msgid "All States"
-msgstr "すべての状態"
+msgstr "All States"
 
 #: lib/table.php:340
 msgid "All users"
-msgstr "全てのユーザー"
+msgstr "All users"
 
 #: lib/table.php:358
 msgid "Filter"
-msgstr "絞込"
+msgstr "Filter"
 
 #: lib/table.php:363
 msgid "Download CSV file"
-msgstr "CSVファイルをダウンロード"
+msgstr "Download CSV file"
 
 #: lib/table.php:366
 msgid "Send E-Mail"
-msgstr "メール送信"
+msgstr "Send E-Mail"
 
 #: lib/table.php:418
 msgid "Filter by date"
-msgstr "日付でのフィルター"
+msgstr "Filter by date"
 
 #: lib/table.php:420
 msgid "All dates"
-msgstr "全てのデータ"
+msgstr "All dates"
 
 #. translators: 1: month name, 2: 4-digit year
 #: lib/table.php:434
 #, php-format
 msgid "%1$s %2$d"
-msgstr ""
+msgstr "%1$s %2$d"
 
 #. Plugin Name of the plugin/theme
-#, fuzzy
 msgid "MJ UPDATE HISTORY"
-msgstr "MJ Update History"
+msgstr "MJ UPDATE HISTORY"
 
 #. Description of the plugin/theme
-#, fuzzy
 msgid ""
 "MJ UPDATE HISTORY is a plugin that can display a list in WordPress Core, "
 "Plugin, Theme Update History Recording, Administration screen, and output to "
 "csv."
 msgstr ""
-"MJ UPDATE HISTORYは、WordPress Core、Plugin、テーマ更新履歴記録、管理画面、お"
-"よびcsvへの出力で一覧を表示できるプラグインです。"
+"MJ UPDATE HISTORY is a plugin that can display a list in WordPress Core, "
+"Plugin, Theme Update History Recording, Administration screen, and output to "
+"csv."
 
 #. Author of the plugin/theme
 msgid "minoji"

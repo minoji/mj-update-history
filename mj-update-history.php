@@ -32,7 +32,7 @@ add_action( 'plugins_loaded', array( $mjuh_database, 'check_database_version' ) 
 
 /* 管理画面設定 */
 add_action( 'admin_menu', array( $mjuh_admin, 'admin_menu_action' ) );            /* パネル作成 */
-add_action( 'admin_enqueue_scripts', array( $mjuh_admin, 'admin_enqueue_scripts' ) );  /* CSS出力 */
+add_action( 'admin_enqueue_scripts', array( $mjuh_admin, 'admin_enqueue_scripts' ) );  /* asset出力 */
 
 add_filter( 'set-screen-option', 'mjlh_logs_per_page_set_option', 10, 3);
 function mjlh_logs_per_page_set_option( $status, $option, $value ) {
@@ -73,3 +73,4 @@ add_action( 'upgrader_process_complete', array( $mjuh_plugin_logger, 'updated' )
 add_action( '_core_updated_successfully', array( $mjuh_plugin_logger, 'updated_core' ), 10, 2 );
 
 
+add_action( 'wp_ajax_mjuh-output-text', array( $mjuh_admin, 'set_text_data' ) );
