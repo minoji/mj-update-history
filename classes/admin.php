@@ -40,36 +40,36 @@ class MJUHAdmin {
 			}
 		}
 
-		if ( isset( $_REQUEST['email-log'] ) ) {
-			// メールの場合
-			// TODO: メソッド化
-			require_once( MJUH_PLUGIN_DIR . '/lib/table.php' );
-			$mj_update_log_table = new MJUpdateLogTable();
-			$mj_update_log_table->prepare_items();
+		// if ( isset( $_REQUEST['email-log'] ) ) {
+		// 	// メールの場合
+		// 	// TODO: メソッド化
+		// 	require_once( MJUH_PLUGIN_DIR . '/lib/table.php' );
+		// 	$mj_update_log_table = new MJUpdateLogTable();
+		// 	$mj_update_log_table->prepare_items();
 
-			$items   = $mj_update_log_table->data;
-			$columns = $mj_update_log_table->get_columns();
+		// 	$items   = $mj_update_log_table->data;
+		// 	$columns = $mj_update_log_table->get_columns();
 
-			$data_array = $this->set_data( $items, $columns );
+		// 	$data_array = $this->set_data( $items, $columns );
 
-			$data = $this->set_body( $data_array );
+		// 	$data = $this->set_body( $data_array );
 
-			if ( $_REQUEST['email-log'] === 'email' ) {
-				$chk_sending = $this->send_email( $data );
-				if ( $chk_sending ) {
-					$message = 'success_message';
-				} else {
-					$message = 'error_message';
-				}
-				function success_message() {
-					echo '<div class="notice is-dismissible updated"><p>' . esc_html__( 'Message sent successfully', 'mj-update-history' ) . '</p><button type="button" class="notice-dismiss"><span class="screen-reader-text">この通知を非表示にする</span></button></div>';
-				}
-				function error_message() {
-					echo '<div class="notice is-dismissible error"><p>' . esc_html__( 'Messgae couldn’t be sent', 'mj-update-history' ) . '</p><button type="button" class="notice-dismiss"><span class="screen-reader-text">この通知を非表示にする</span></button></div>';
-				}
-				add_action( 'admin_notices', $message );
-			}
-		}
+		// 	if ( $_REQUEST['email-log'] === 'email' ) {
+		// 		$chk_sending = $this->send_email( $data );
+		// 		if ( $chk_sending ) {
+		// 			$message = 'success_message';
+		// 		} else {
+		// 			$message = 'error_message';
+		// 		}
+		// 		function success_message() {
+		// 			echo '<div class="notice is-dismissible updated"><p>' . esc_html__( 'Message sent successfully', 'mj-update-history' ) . '</p><button type="button" class="notice-dismiss"><span class="screen-reader-text">この通知を非表示にする</span></button></div>';
+		// 		}
+		// 		function error_message() {
+		// 			echo '<div class="notice is-dismissible error"><p>' . esc_html__( 'Messgae couldn’t be sent', 'mj-update-history' ) . '</p><button type="button" class="notice-dismiss"><span class="screen-reader-text">この通知を非表示にする</span></button></div>';
+		// 		}
+		// 		add_action( 'admin_notices', $message );
+		// 	}
+		// }
 
 		$hook = add_menu_page(
 			__( 'Update History', 'mj-update-history' ),    /* HTMLのページタイトル */
@@ -129,7 +129,7 @@ class MJUHAdmin {
 		//テーブル生成用class読み込み
 		require_once( MJUH_PLUGIN_DIR . '/lib/table.php' );
 		$mj_update_log_table = new MJUpdateLogTable();
-		$mj_update_log_table->prepare_items();
+		$table_data = $mj_update_log_table->prepare_items();
 
 		echo '<div class="wrap">';
 		echo '<h1>';
@@ -140,10 +140,10 @@ class MJUHAdmin {
 		$mj_update_log_table->search_box( __( 'Search', 'mj-update-history' ), 'search' );
 		$mj_update_log_table->display();
 		echo '</form>';
-		echo '<form action="#" id="mjuh-output-text" method="POST">';
-		echo '<input type="submit" class="button button-primary" value="' . esc_html__( 'Text output for copy', 'mj-update-history' ) . '">';
-		echo '</form>';
-		echo '<div id="mjuh-output-area"></div>';
+		// echo '<form action="#" id="mjuh-output-text" method="POST">';
+		// echo '<input type="submit" class="button button-primary" value="' . esc_html__( 'Text output for copy', 'mj-update-history' ) . '">';
+		// echo '</form>';
+		// echo '<div id="mjuh-output-area"></div>';
 		echo '</div>';
 
 	}
@@ -232,11 +232,55 @@ class MJUHAdmin {
 	 * データ作成
 	 */
 	function set_text_data() {
+		$url = $_POST['url'];
+		parse_str($url, $str);
 		require_once( MJUH_PLUGIN_DIR . '/lib/table.php' );
 		$mj_update_log_table = new MJUpdateLogTable();
 		$mj_update_log_table->prepare_items();
+		global $wpdb;
+		$logs_table_name = $wpdb->prefix . 'mjuh_logs';
+		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
-		$items   = $mj_update_log_table->data;
+		$where = ' WHERE 1 = 1';
+		// if a filter was performed.
+		if ( $str['type'] && $str['type'] !== '' ) {
+			$where .= $wpdb->prepare( ' AND `type` = %s', strtolower( $str['type'] ) );
+		}
+		if ( $str['state'] && $str['state'] !== '' ) {
+			$where .= $wpdb->prepare( ' AND `state` = %s', strtolower( $str['state'] ) );
+		}
+		if ( $str['user'] && $str['user'] !== '' ) {
+			$where .= $wpdb->prepare( ' AND `user_id` = %s', strtolower( $str['user'] ) );
+		}
+		if ( $str['m'] && $str['m'] !== '' && $str['m'] !== '0' ) {
+			require_once( ABSPATH . 'wp-load.php' );
+			$where .= $wpdb->prepare( ' AND (DATE_FORMAT(date, %s) = %s)', '%Y%m', $str['m'] );
+		}
+
+		$query = "SELECT * FROM $logs_table_name $where ORDER BY date DESC;";
+		$items = $wpdb->get_results( $query, ARRAY_A );
+
+		$user_search_key = isset( $str['s'] ) ? wp_unslash( trim( $str['s'] ) ) : '';
+		if( $user_search_key ) {
+			$items = array_values( array_filter( $items, function( $row ) use( $user_search_key ) {
+				foreach( $row as $row_val ) {
+					if( stripos( $row_val, $user_search_key ) !== false ) {
+						return true;
+					}
+				}
+			} ) );
+		}
+
+			function usort_reorder_str( $a, $b ) {
+				$url = $_POST['url'];
+				parse_str($url, $str);
+				$orderby = ( !empty( $str['orderby'] ) ) ? $str['orderby'] : 'date'; //If no sort, default to title
+				$order = ( !empty( $str['order'] ) ) ? $str['order'] : 'desc'; //If no order, default to asc
+				$result = strcmp( $a[$orderby], $b[$orderby] ); //Determine sort order
+				return ( $order === 'asc' ) ? $result : -$result; //Send final sort direction to usort
+			}
+			usort( $items, 'usort_reorder_str' );
+
 		$columns = $mj_update_log_table->get_columns();
 
 		$data_array = $this->set_data( $items, $columns );
@@ -251,6 +295,7 @@ class MJUHAdmin {
 
 		wp_die();
 	}
+
 
 	/**
 	 * 本文作成
@@ -294,17 +339,17 @@ class MJUHAdmin {
 	/**
 	 * Send email
 	 */
-	function send_email( $data ) {
+	// function send_email( $data ) {
 
-		// set $to
-		$user = wp_get_current_user();
-		$to = $user->user_email;
+	// 	// set $to
+	// 	$user = wp_get_current_user();
+	// 	$to = $user->user_email;
 
-		$subject = get_bloginfo( 'name' ) . ' ' . __('update history', 'mj-update-history');
-		$message = $data;
+	// 	$subject = get_bloginfo( 'name' ) . ' ' . __('update history', 'mj-update-history');
+	// 	$message = $data;
 
-		return wp_mail( $to, $subject, $message );
+	// 	return wp_mail( $to, $subject, $message );
 
-	}
+	// }
 
 }

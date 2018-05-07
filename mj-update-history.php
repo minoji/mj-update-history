@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: MJ UPDATE HISTORY
-Description: MJ UPDATE HISTORY is a plugin that can display a list in WordPress Core, Plugin, Theme Update History Recording, Administration screen, and output to csv.
+Plugin Name: MJ Update History
+Description: with MJ Update History, plugins, theme and core updates and changes can be saved in the log and displayed as a list or output in various formats.(example: csv,text)
 Author: minoji
-Version: 0.1.1
+Version: 1.0.0
 */
 
 define( 'MJUH_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
@@ -73,4 +73,4 @@ add_action( 'upgrader_process_complete', array( $mjuh_plugin_logger, 'updated' )
 add_action( '_core_updated_successfully', array( $mjuh_plugin_logger, 'updated_core' ), 10, 2 );
 
 
-add_action( 'wp_ajax_mjuh-output-text', array( $mjuh_admin, 'set_text_data' ) );
+add_action( 'wp_ajax_mjuh_output_text', array( $mjuh_admin, 'set_text_data' ) );

@@ -1,12 +1,14 @@
 jQuery(document).ready(function ($) {
 
-  $('#mjuh-output-text').submit(function (e) {
+  $('#mjuh-output-text').click(function (e) {
     e.preventDefault();
     $('#mjuh-output-area').html('<span class="spinner"></span>');
     $('#mjuh-output-area .spinner').addClass('is-active');
+    var url = location.href;
 
     var data = {
-      'action': 'mjuh-output-text'
+      'action': 'mjuh_output_text',
+      'url': url
     };
 
     $.post(

@@ -4,3 +4,10 @@
 .form-table {
   margin-bottom:32px;
 }
+#mjuh-output-area-form {
+  width: 100%;
+  margin-top: 1em;
+}
+#mjuh-output-text {
+  margin-left: 6px;
+}

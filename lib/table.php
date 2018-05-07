@@ -362,9 +362,13 @@ class MJUpdateLogTable extends WP_List_Table {
 			echo '<button type="submit" name="download-log" class="button button-primary" value="download-csv">';
 			echo esc_html__( 'Download CSV file', 'mj-update-history' );
 			echo '</button>';
-			echo '<button type="submit" name="email-log" class="button button-primary" value="email">';
-			echo esc_html__( 'Send E-Mail', 'mj-update-history' );
+			// echo '<button type="submit" name="email-log" class="button button-primary" value="email">';
+			// echo esc_html__( 'Send E-Mail', 'mj-update-history' );
+			// echo '</button>';
+			echo '<button type="button" name="output-text" id="mjuh-output-text" class="button button-primary" value="output-text">';
+			echo esc_html__( 'Text output for copy', 'mj-update-history' );
 			echo '</button>';
+			echo '<div id="mjuh-output-area"></div>';
 		}
 
 	}
@@ -526,7 +530,7 @@ class MJUpdateLogTable extends WP_List_Table {
 		}
 
 		$query = "SELECT * FROM $logs_table_name $where ORDER BY date DESC;";
-		$data = $wpdb->get_results($query, ARRAY_A );
+		$data = $wpdb->get_results( $query, ARRAY_A );
 
 		/**
 		 * if a search was performed.
@@ -545,14 +549,14 @@ class MJUpdateLogTable extends WP_List_Table {
 		 * to a custom query. The returned data will be pre-sorted, and this array
 		 * sorting technique would be unnecessary.
 		 */
-		if (!function_exists('usort_reorder')) {
-			function usort_reorder($a,$b){
-				$orderby = (!empty($_REQUEST['orderby'])) ? $_REQUEST['orderby'] : 'date'; //If no sort, default to title
-				$order = (!empty($_REQUEST['order'])) ? $_REQUEST['order'] : 'desc'; //If no order, default to asc
-				$result = strcmp($a[$orderby], $b[$orderby]); //Determine sort order
-				return ($order==='asc') ? $result : -$result; //Send final sort direction to usort
+		if ( !function_exists( 'usort_reorder' ) ) {
+			function usort_reorder( $a, $b ) {
+				$orderby = ( !empty( $_REQUEST['orderby'] ) ) ? $_REQUEST['orderby'] : 'date'; //If no sort, default to title
+				$order = ( !empty( $_REQUEST['order'] ) ) ? $_REQUEST['order'] : 'desc'; //If no order, default to asc
+				$result = strcmp( $a[$orderby], $b[$orderby] ); //Determine sort order
+				return ( $order === 'asc' ) ? $result : -$result; //Send final sort direction to usort
 			}
-			usort($data, 'usort_reorder');
+			usort( $data, 'usort_reorder' );
 		}
 
 
@@ -569,7 +573,7 @@ class MJUpdateLogTable extends WP_List_Table {
 		 * ---------------------------------------------------------------------
 		 **********************************************************************/
 
-		// for csv
+		// for output(csv/trext)
 		$this->data = $data;
 
 		/**
@@ -585,7 +589,7 @@ class MJUpdateLogTable extends WP_List_Table {
 		 * without filtering. We'll need this later, so you should always include it
 		 * in your own package classes.
 		 */
-		$total_items = count($data);
+		$total_items = count( $data );
 
 
 		/**
@@ -593,7 +597,7 @@ class MJUpdateLogTable extends WP_List_Table {
 		 * to ensure that the data is trimmed to only the current page. We can use
 		 * array_slice() to
 		 */
-		$data_on_the_first_page = array_slice($data,(($current_page-1)*$per_page),$per_page);
+		$data_on_the_first_page = array_slice( $data, ( ( $current_page - 1 ) * $per_page ), $per_page );
 
 
 
@@ -608,9 +612,9 @@ class MJUpdateLogTable extends WP_List_Table {
 		 * REQUIRED. We also have to register our pagination options & calculations.
 		 */
 		$this->set_pagination_args( array(
-			'total_items' => $total_items,                  //WE have to calculate the total number of items
-			'per_page'    => $per_page,                     //WE have to determine how many items to show on a page
-			'total_pages' => ceil($total_items/$per_page)   //WE have to calculate the total number of pages
+			'total_items' => $total_items,                    //WE have to calculate the total number of items
+			'per_page'    => $per_page,                       //WE have to determine how many items to show on a page
+			'total_pages' => ceil( $total_items / $per_page ) //WE have to calculate the total number of pages
 		) );
 	}
 
