@@ -5,7 +5,7 @@ Plugin URI: https://wordpress.org/plugins/mj-update-history/
 Description: with MJ Update History, plugins, theme and core updates and changes can be saved in the log and displayed as a list or output in various formats.(example: csv,text)
 Author: minoji
 Author URI: https://profiles.wordpress.org/minoji
-Version: 1.0.2
+Version: 1.0.3
 License: GPLv2 or later
 */
 

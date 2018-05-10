@@ -245,6 +245,17 @@ class MJUpdateLogTable extends WP_List_Table {
 			$this->select_months();
 
 			// set type_array for select
+
+			if ( !function_exists( 'array_column' ) ) {
+				function array_column( $list, $key ) {
+					$return_list = array();
+					foreach ( $list as $data ) {
+						$return_list[] = $data[ $key ];
+					}
+					return $return_list;
+				}
+			}
+
 			$types_array = array_column( $query, 'type' );
 			$types = array_unique( $types_array );
 			sort( $types );
