@@ -34,6 +34,9 @@ with MJ Update History, plugins, theme and core updates and changes can be saved
 = 1.0.0 =
 * 2018-05-07 First release
 
+= 1.0.2 =
+* 2018-05-10 Minor modifications
+
 == Upgrade notice ==
 
 
