@@ -1,9 +1,12 @@
 <?php
 /*
 Plugin Name: MJ Update History
+Plugin URI: https://wordpress.org/plugins/mj-update-history/
 Description: with MJ Update History, plugins, theme and core updates and changes can be saved in the log and displayed as a list or output in various formats.(example: csv,text)
 Author: minoji
-Version: 1.0.0
+Author URI: https://profiles.wordpress.org/minoji
+Version: 1.0.2
+License: GPLv2 or later
 */
 
 define( 'MJUH_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
